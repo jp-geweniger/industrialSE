@@ -75,3 +75,40 @@
 | **Histogram**           | Explore the distribution of specific features (e.g., efficiency scores).   |
 
 ---
+
+Business Case: Identifying Key Factors Influencing Monthly Sales Revenue
+
+Objective:
+To determine which factors significantly impact Monthly Sales Revenue and leverage this information to improve store performance and profitability.
+
+Approach:
+Correlation Analysis:
+
+Identify relationships between Monthly Sales Revenue and other variables like StoreSize, MarketingSpend, CustomerFootfall, etc.
+Visualize correlations using heatmaps or scatterplots.
+Regression Analysis:
+
+Develop a predictive model to quantify the impact of key variables on Monthly Sales Revenue.
+Represent results using bar charts to show variable importance.
+Segment Analysis:
+
+Group stores by StoreCategory and analyze their performance.
+Use boxplots or bar graphs to compare Monthly Sales Revenue across categories.
+Geographical Trends:
+
+Examine the impact of StoreLocation and CompetitorDistance on revenue.
+Display findings using geospatial maps or clustered bar charts.
+Efficiency Insights:
+
+Evaluate how EmployeeEfficiency and StoreAge correlate with sales.
+Highlight trends using line charts or scatterplots.
+Impact of Promotions and Marketing:
+
+Analyze the effect of MarketingSpend and PromotionsCount on customer footfall and revenue.
+Visualize with time-series charts or stacked bar plots.
+Expected Outputs for Dashboard:
+Sales Overview: Total and average Monthly Sales Revenue per store category or region.
+Key Drivers: Interactive visualizations showing correlations and regression coefficients.
+Store Performance: A ranked list of stores by efficiency metrics or profitability.
+Customer Insights: Footfall trends and their relationship with MarketingSpend and promotions.
+Geographic Insights: A map visualization of revenue hotspots and competitor effects.
