@@ -1,15 +1,15 @@
-import dash
-from dash import dcc, html, Input, Output
-import sqlite3
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
+import dash  # Framework zum Erstellen von Webanwendungen
+from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
+import sqlite3  # SQLite-Datenbankverbindung und -operationen
+import pandas as pd  # Datenmanipulation und -analyse
+import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierungen
+import plotly.graph_objects as go  # Detaillierte Schnittstelle zum Erstellen von Plotly-Visualisierungen
+from geopy.geocoders import Nominatim  # Geocoding-Dienst zum Umwandeln von Städtenamen in Koordinaten
+from geopy.extra.rate_limiter import RateLimiter  # Ratenbegrenzung für Geocoding-Anfragen
 import time
 import math
-import json
-import os
+import json  # JSON-Dateioperationen (z.B. Lesen/Schreiben von Cache)
+import os  # Betriebssystembezogene Funktionen (z.B. Überprüfung der Dateiexistenz)
 
 
 class SQLiteConnector:
@@ -120,27 +120,167 @@ class Dashboard:
     """Ende Funktionen für die Map (JPG)"""
 
     def setup_layout(self):
-        """Setup Aufbau des Dashboards."""
+        """ Setup Aufbau des Dashboards mit einer einklappbaren Navbar und separaten Views/Tabs. (JPG) """
         self.app.layout = html.Div([
-            html.H1("Store Performance Dashboard"),
-            html.H2("Overview"),
-            html.Div(id="overview-section"),
-            html.H2("Key Influencers"),
-            dcc.Graph(id="feature-importance"),
-            dcc.Graph(id="correlation-heatmap"),
-            html.H2("Performance Insights"),
-            dcc.Graph(id="scatter-footfall-revenue"),
-            dcc.Graph(id="scatter-marketing-revenue"),
-            dcc.Graph(id="scatter-competitor-revenue"),
-            dcc.Graph(id="box-plot-category"),
-            html.H2("Regional Comparison"),
-            dcc.Graph(id="map-visualization"),
-            dcc.Graph(id="grouped-bar-chart"),
-            html.H2("Store Operations"),
-            dcc.Graph(id="bubble-chart-operations"),
-            dcc.Graph(id="histogram-efficiency"),
-            html.H2("Recommendations"),
-            html.Div(id="recommendations-section")
+            dcc.Location(id="url", refresh=False),
+
+            # Laden von Font Awesome (für Icons)
+            html.Link(
+                rel="stylesheet",
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            ),
+
+            # Runder Toggle Navbar Button
+            html.Button(
+                html.I(className="fas fa-bars", style={"color": "#007bff"}),  # Blaues toggle icon
+                id="toggle-navbar",
+                n_clicks=0,
+                style={
+                    "position": "fixed",
+                    "top": "10px",
+                    "left": "10px",
+                    "zIndex": "1000",
+                    "borderRadius": "50%",
+                    "width": "50px",
+                    "height": "50px",
+                    "fontSize": "20px",
+                    "backgroundColor": "#e0e0e0",  # Helleres grau
+                    "border": "none",
+                    "cursor": "pointer",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                    "boxShadow": "2px 2px 5px rgba(0, 0, 0, 0.2)"
+                }
+            ),
+            # Sidebar mit den Navigationsbuttons (JPG)
+            html.Div([
+                html.Button([
+                    html.Span(html.I(className="fas fa-home", style={"color": "#ff5733"}), style={"width": "30px"}),
+                    html.Span("Homepage", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-overview", n_clicks=0, style={"width": "100%", "height": "60px", "fontSize": "18px",
+                                                         "margin": "5px 0", "display": "flex", "alignItems": "center",
+                                                         "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-key", style={"color": "#28a745"}), style={"width": "30px"}),
+                    html.Span("Key Influencers", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-key-influencers", n_clicks=0, style={"width": "100%", "height": "60px", "fontSize": "18px",
+                                                                "margin": "5px 0", "display": "flex",
+                                                                "alignItems": "center",
+                                                                "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-balance-scale", style={"color": "#6f42c1"}),
+                              style={"width": "30px"}),
+                    html.Span("Vergleichsfunktion", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-vergleichsfunktion", n_clicks=0,
+                    style={"width": "100%", "height": "60px", "fontSize": "18px",
+                           "margin": "5px 0", "display": "flex", "alignItems": "center",
+                           "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-tachometer-alt", style={"color": "#007bff"}),
+                              style={"width": "30px"}),
+                    html.Span("Performance Insights", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-performance-insights", n_clicks=0,
+                    style={"width": "100%", "height": "60px", "fontSize": "18px",
+                           "margin": "5px 0", "display": "flex", "alignItems": "center",
+                           "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-user", style={"color": "#ffc107"}), style={"width": "30px"}),
+                    html.Span("Customer Insights", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-customer-insights", n_clicks=0, style={"width": "100%", "height": "60px", "fontSize": "18px",
+                                                                  "margin": "5px 0", "display": "flex",
+                                                                  "alignItems": "center",
+                                                                  "borderRadius": "12px",
+                                                                  "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-map-marker-alt", style={"color": "#dc3545"}),
+                              style={"width": "30px"}),
+                    html.Span("Regional Comparison", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-regional-comparison", n_clicks=0,
+                    style={"width": "100%", "height": "60px", "fontSize": "18px",
+                           "margin": "5px 0", "display": "flex", "alignItems": "center",
+                           "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-store", style={"color": "#6610f2"}), style={"width": "30px"}),
+                    html.Span("Store Operations", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-store-operations", n_clicks=0, style={"width": "100%", "height": "60px", "fontSize": "18px",
+                                                                 "margin": "5px 0", "display": "flex",
+                                                                 "alignItems": "center",
+                                                                 "borderRadius": "12px", "backgroundColor": "#f0f0f0"}),
+
+                html.Button([
+                    html.Span(html.I(className="fas fa-lightbulb", style={"color": "#17a2b8"}),
+                              style={"width": "30px"}),
+                    html.Span("Recommendations", style={"flex": "1", "textAlign": "left"})
+                ], id="btn-recommendations", n_clicks=0, style={"width": "100%", "height": "60px", "fontSize": "18px",
+                                                                "margin": "5px 0", "display": "flex",
+                                                                "alignItems": "center",
+                                                                "borderRadius": "12px", "backgroundColor": "#f0f0f0"})
+            ], id="sidebar", style={
+                "width": "200px",
+                "background-color": "#f8f9fa",
+                "position": "fixed",
+                "height": "100%",
+                "overflow": "auto",
+                "padding": "10px",
+                "display": "flex",
+                "flexDirection": "column",
+                "justifyContent": "center",
+                "alignItems": "center"
+            }),
+            # Konfiguration des Inhalts der Tabs/Views
+            html.Div([
+                html.Div([
+                    html.H1("Store Performance Dashboard"),
+                    html.H2("Overview"),
+                    html.Div(id="overview-section")
+                ], id="page-overview", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Key Influencers"),
+                    dcc.Graph(id="feature-importance"),
+                    dcc.Graph(id="correlation-heatmap")
+                ], id="page-key-influencers", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Vergleichsfunktion")
+                ], id="page-vergleichsfunktion", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Performance Insights"),
+                    dcc.Graph(id="scatter-footfall-revenue"),
+                    dcc.Graph(id="scatter-marketing-revenue"),
+                    dcc.Graph(id="scatter-competitor-revenue"),
+                    dcc.Graph(id="box-plot-category")
+                ], id="page-performance-insights", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Customer Insights")
+                ], id="page-customer-insights", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Regional Comparison"),
+                    dcc.Graph(id="map-visualization"),
+                    dcc.Graph(id="grouped-bar-chart")
+                ], id="page-regional-comparison", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Store Operations"),
+                    dcc.Graph(id="bubble-chart-operations"),
+                    dcc.Graph(id="histogram-efficiency")
+                ], id="page-store-operations", style={"display": "none"}),
+
+                html.Div([
+                    html.H2("Recommendations"),
+                    html.Div(id="recommendations-section")
+                ], id="page-recommendations", style={"display": "none"}),
+            ], id="page-content", style={"margin-left": "220px", "padding": "20px"})
         ])
 
     def setup_callbacks(self):
@@ -179,6 +319,106 @@ class Dashboard:
             return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
                     map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, recommendations)
+
+        """ Navigation und View-Handling basierend auf der URL (JPG) """
+
+        #Callback, damit nur die aktive View, basierend auf der URL, angezeigt wird
+        @self.app.callback(
+            Output("page-overview", "style"),
+            Output("page-key-influencers", "style"),
+            Output("page-vergleichsfunktion", "style"),
+            Output("page-performance-insights", "style"),
+            Output("page-customer-insights", "style"),
+            Output("page-regional-comparison", "style"),
+            Output("page-store-operations", "style"),
+            Output("page-recommendations", "style"),
+            Input("url", "pathname")
+        )
+        def display_page(pathname):
+            hidden = {"display": "none"}
+            visible = {"display": "block"}
+            # Initialize all pages as hidden.
+            styles = [hidden] * 8
+            if pathname in ["/overview", "/", None]:
+                styles[0] = visible
+            elif pathname == "/key-influencers":
+                styles[1] = visible
+            elif pathname == "/vergleichsfunktion":
+                styles[2] = visible
+            elif pathname == "/performance-insights":
+                styles[3] = visible
+            elif pathname == "/customer-insights":
+                styles[4] = visible
+            elif pathname == "/regional-comparison":
+                styles[5] = visible
+            elif pathname == "/store-operations":
+                styles[6] = visible
+            elif pathname == "/recommendations":
+                styles[7] = visible
+            else:
+                styles[0] = visible  # default zur Homepage
+            return styles
+
+        # Callback zum Togglen der Sidebar mit dem Button
+        @self.app.callback(
+            Output("sidebar", "style"),
+            Output("page-content", "style"),
+            Input("toggle-navbar", "n_clicks"),
+            State("sidebar", "style"),
+            State("page-content", "style")
+        )
+        def toggle_sidebar(n_clicks, current_sidebar_style, current_content_style):
+            if n_clicks is None:
+                raise dash.exceptions.PreventUpdate
+            # Togglen der sidebar: wenn ungerade Anzahl an Klicks, Verstecken; wenn gerade Anzahl, Zeigen.
+            if n_clicks % 2 == 1:
+                new_sidebar_style = current_sidebar_style.copy() if current_sidebar_style else {}
+                new_sidebar_style["display"] = "none"
+                new_content_style = current_content_style.copy() if current_content_style else {}
+                new_content_style["margin-left"] = "20px"
+                return new_sidebar_style, new_content_style
+            else:
+                new_sidebar_style = current_sidebar_style.copy() if current_sidebar_style else {}
+                new_sidebar_style["display"] = "flex"
+                new_content_style = current_content_style.copy() if current_content_style else {}
+                new_content_style["margin-left"] = "220px"
+                return new_sidebar_style, new_content_style
+
+        # Callback zum Updaten der URL, je nachdem welcher Button geklickt wird
+        @self.app.callback(
+            Output("url", "pathname"),
+            [Input("btn-overview", "n_clicks"),
+             Input("btn-key-influencers", "n_clicks"),
+             Input("btn-vergleichsfunktion", "n_clicks"),
+             Input("btn-performance-insights", "n_clicks"),
+             Input("btn-customer-insights", "n_clicks"),
+             Input("btn-regional-comparison", "n_clicks"),
+             Input("btn-store-operations", "n_clicks"),
+             Input("btn-recommendations", "n_clicks")]
+        )
+        # Navigierungsfunktion
+        def navigate(n_overview, n_key_influencers, n_vergleich, n_perf, n_cust, n_reg, n_store, n_rec):
+            ctx = dash.callback_context
+            if not ctx.triggered:
+                return "/overview"
+            button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+            if button_id == "btn-overview":
+                return "/overview"
+            elif button_id == "btn-key-influencers":
+                return "/key-influencers"
+            elif button_id == "btn-vergleichsfunktion":
+                return "/vergleichsfunktion"
+            elif button_id == "btn-performance-insights":
+                return "/performance-insights"
+            elif button_id == "btn-customer-insights":
+                return "/customer-insights"
+            elif button_id == "btn-regional-comparison":
+                return "/regional-comparison"
+            elif button_id == "btn-store-operations":
+                return "/store-operations"
+            elif button_id == "btn-recommendations":
+                return "/recommendations"
+            return "/overview"
 
     def create_overview_section(self, df):
         """Erzeugt Übersichts-Sektion."""
@@ -416,7 +656,7 @@ class Dashboard:
                     base_lat, base_lon,
                     cat_idx_in_city,
                     city_cat_count,
-                    0.17 # Radius für die Verschiebung der Marker, damit sie nicht übereinander liegen
+                    0.17  # Radius für die Verschiebung der Marker, damit sie nicht übereinander liegen
                 )
                 lats.append(lat)
                 lons.append(lon)
