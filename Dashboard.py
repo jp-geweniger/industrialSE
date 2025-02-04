@@ -4,12 +4,7 @@ import sqlite3  # SQLite-Datenbankverbindung und -operationen
 import pandas as pd  # Datenmanipulation und -analyse
 import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierungen
 import plotly.graph_objects as go  # Detaillierte Schnittstelle zum Erstellen von Plotly-Visualisierungen
-from geopy.geocoders import Nominatim  # Geocoding-Dienst zum Umwandeln von Städtenamen in Koordinaten
-from geopy.extra.rate_limiter import RateLimiter  # Ratenbegrenzung für Geocoding-Anfragen
-import time
 import math
-import json  # JSON-Dateioperationen (z.B. Lesen/Schreiben von Cache)
-import os  # Betriebssystembezogene Funktionen (z.B. Überprüfung der Dateiexistenz)
 
 
 class SQLiteConnector:
@@ -28,77 +23,27 @@ class Dashboard:
     def __init__(self, db_path):
         self.db_connector = SQLiteConnector(db_path)
         self.app = dash.Dash(__name__)
-        self.coordinates_cache = self.load_coordinates_cache()
         self.setup_layout()
         self.setup_callbacks()
 
     """Beginn Funktionen für die Map (Jan-Philipp Geweniger(JPG))"""
-    def load_coordinates_cache(self):
-        """Lädt gecachte Koordinaten oder erstellt einen neuen Cache."""
-        cache_file = 'coordinates_cache.json'
-        if os.path.exists(cache_file):
-            try:
-                with open(cache_file, 'r') as f:
-                    return json.load(f)
-            except:
-                return {}
-        return {}
-
-    def save_coordinates_cache(self):
-        """Speichert die Koordinaten im Cache."""
-        cache_file = 'coordinates_cache.json'
-        with open(cache_file, 'w') as f:
-            json.dump(self.coordinates_cache, f)
-
-    def geocode_locations(self, df):
-        """Geokodiert Städtenamen zu Koordinaten mit Zwischenspeicherung und Fallback-Werten."""
+    def get_coordinates(self, city):
+        """ Gibt hardkodierte Koordinaten für Städte zurück """
         fallback_coordinates = {
             'Palo Alto': (37.4419, -122.1430),
             'Los Angeles': (34.0522, -118.2437),
             'Sacramento': (38.5816, -121.4944),
             'San Francisco': (37.7749, -122.4194),
         }
+        return fallback_coordinates.get(city, (None, None))
 
-        geolocator = None
-        geocode = None
+    def get_all_coordinates(self, df):
+        """ Fragt die hardkodierten Koordinaten ab """
         coordinates = {}
-
         for city in df['StoreLocation'].unique():
-            # Prüfe zunächst den Cache
-            if city in self.coordinates_cache:
-                coordinates[city] = tuple(self.coordinates_cache[city])
-                continue
-
-            # Prüfe dann die Fallback-Werte
-            city_key = next((k for k in fallback_coordinates.keys()
-                             if k.lower() in city.lower()), None)
-            if city_key:
-                coordinates[city] = fallback_coordinates[city_key]
-                self.coordinates_cache[city] = list(fallback_coordinates[city_key])
-                continue
-
-            # Wenn weder Cache noch Fallback verfügbar, versuche Geocoding
-            if geolocator is None:
-                geolocator = Nominatim(user_agent="my_dashboard")
-                geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1,
-                                      max_retries=3, error_wait_seconds=2.0)
-
-            try:
-                location = geocode(f"{city}, USA")
-                if location:
-                    coordinates[city] = (location.latitude, location.longitude)
-                    self.coordinates_cache[city] = [location.latitude, location.longitude]
-                    time.sleep(1)  # Zusätzliche Verzögerung
-                else:
-                    print(f"Could not find coordinates for {city}")
-                    coordinates[city] = (None, None)
-            except Exception as e:
-                print(f"Error geocoding {city}: {e}")
-                coordinates[city] = (None, None)
-
-        # Speichere aktualisierte Koordinaten
-        self.save_coordinates_cache()
+            coordinates[city] = self.get_coordinates(city)
         return coordinates
+    # Ende Funktionen für die Map (JPG)
 
     @staticmethod
     def calculate_marker_position(base_lat, base_lon, index, total_categories, radius=0.15):
@@ -477,7 +422,7 @@ class Dashboard:
     """Beginn Kartenfunktionalität (JPG)"""
     def create_map_visualization(self, df):
         """Erzeugt die Kartenvisualisierung für die Filialverteilung nach Kategorie und Umsatz."""
-        coordinates = self.geocode_locations(df)
+        coordinates = self.get_all_coordinates(df)
 
         # Aggregieren der Daten pro Stadt und Kategorie
         city_category_stats = df.groupby(['StoreLocation', 'StoreCategory']).agg({
