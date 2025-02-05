@@ -1,5 +1,7 @@
 import dash  # Framework zum Erstellen von Webanwendungen
 from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
+from plotly.express import density_heatmap
+
 from scripts.sqlite_connector import SQLiteConnector
 from views.overview_tab import OverviewTab
 from views.key_influencers_tab import KeyInfluencersTab
@@ -7,6 +9,7 @@ from views.performance_insights_tab import PerformanceInsightsTab
 from views.recommendations_tab import RecommendationsTab
 from views.regional_comparison_tab import RegionalComparisonTab
 from views.store_operations_tab import StoreOperationsTab
+from views.customer_insights_tab import CustomerInsightsTab
 
 
 class Dashboard:
@@ -142,7 +145,7 @@ class Dashboard:
                 html.Div([
                     html.H2("Key Influencers"),
                     dcc.Graph(id="feature-importance"),
-                    dcc.Graph(id="correlation-heatmap")
+                    dcc.Graph(id="correlation-heatmap",style={"height": "800px", "width": "100%"} )
                 ], id="page-key-influencers", style={"display": "none"}),
 
                 html.Div([
@@ -158,7 +161,8 @@ class Dashboard:
                 ], id="page-performance-insights", style={"display": "none"}),
 
                 html.Div([
-                    html.H2("Customer Insights")
+                    html.H2("Customer Insights"),
+                    dcc.Graph(id="density-heatmap-fig")  # Fehlendes Diagramm einfügen
                 ], id="page-customer-insights", style={"display": "none"}),
 
                 html.Div([
@@ -194,6 +198,7 @@ class Dashboard:
              Output("grouped-bar-chart", "figure"),
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
+             Output("density-heatmap-fig", "figure"),
              Output("recommendations-section", "children")],
             Input("feature-importance", "id")  # Dummy input to trigger callback
         )
@@ -222,12 +227,15 @@ class Dashboard:
             bubble_chart_fig = StoreOperationsTab.create_bubble_chart_operations(df)
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
+            #Funktionen/Diagramme des CustomerInsight-Tabs
+            density_heatmap_fig = CustomerInsightsTab.create_customer_heatmap(df)
+
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section()
 
             return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
-                    map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, recommendations)
+                    map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, density_heatmap_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
 
