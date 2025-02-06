@@ -244,3 +244,22 @@ class RegionalComparisonTab:
                       title="Revenue by Location and Category",
                       labels={"MonthlySalesRevenue": "Revenue", "StoreLocation": "Location"},
                       hover_data=["StoreID"])
+
+    @staticmethod
+    def create_scatter_competitor_revenue(df):
+        """
+        Erstellt ein Scatter Plot, das den Zusammenhang zwischen CompetitorDistance und MonthlySalesRevenue zeigt.
+        Dabei werden die Stores anhand ihrer StoreLocation farblich unterschieden. (JE und JPG)
+        """
+        fig = px.scatter(
+            df,
+            x="CompetitorDistance",
+            y="MonthlySalesRevenue",
+            color="StoreLocation",  # unterschiedliche Farben für die verschiedenen Städte
+            title="Competitor Distance vs. Revenue",
+            labels={
+                "CompetitorDistance": "Competitor Distance",
+                "MonthlySalesRevenue": "Monthly Sales Revenue"
+            }
+        )
+        return fig
