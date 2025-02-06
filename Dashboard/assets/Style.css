@@ -1,0 +1,82 @@
+/* ============ Grundlayout ============ */
+body {
+    background-color: #f8f9fa; /* Heller Hintergrund */
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 95%;
+}
+
+/* ============ Sidebar Styling ============ */
+.sidebar {
+    background-color: #343a40; /* Dunkler Hintergrund */
+    min-height: 100vh;
+    padding: 15px;
+    color: white;
+}
+
+.sidebar a, .sidebar button {
+    color: white !important; /* Schriftfarbe weiß */
+    font-weight: bold;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.sidebar a:hover, .sidebar button:hover {
+    background-color: #495057; /* Dunklerer Hover-Effekt */
+    border-radius: 5px;
+}
+
+/* ============ Navigation Buttons ============ */
+.nav-link {
+    color: white !important;
+    font-size: 16px;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* ============ Header Styling ============ */
+h1 {
+    background: linear-gradient(90deg, #343a40, #6c757d);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* ============ Karten Styling ============ */
+.card {
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.card-header {
+    background-color: #6c757d !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+/* ============ Tabelle Styling ============ */
+.ag-theme-alpine {
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ============ Buttons & Inputs ============ */
+button, .btn {
+    background-color: #007bff !important;
+    color: white !important;
+    border-radius: 5px;
+}
+
+button:hover, .btn:hover {
+    background-color: #0056b3 !important;
+}
+

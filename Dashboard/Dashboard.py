@@ -1,7 +1,5 @@
 import dash  # Framework zum Erstellen von Webanwendungen
 from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
-from plotly.express import density_heatmap
-
 from scripts.sqlite_connector import SQLiteConnector
 from views.overview_tab import OverviewTab
 from views.key_influencers_tab import KeyInfluencersTab
@@ -9,7 +7,6 @@ from views.performance_insights_tab import PerformanceInsightsTab
 from views.recommendations_tab import RecommendationsTab
 from views.regional_comparison_tab import RegionalComparisonTab
 from views.store_operations_tab import StoreOperationsTab
-from views.customer_insights_tab import CustomerInsightsTab
 
 
 class Dashboard:
@@ -145,7 +142,7 @@ class Dashboard:
                 html.Div([
                     html.H2("Key Influencers"),
                     dcc.Graph(id="feature-importance"),
-                    dcc.Graph(id="correlation-heatmap",style={"height": "800px", "width": "100%"} )
+                    dcc.Graph(id="correlation-heatmap")
                 ], id="page-key-influencers", style={"display": "none"}),
 
                 html.Div([
@@ -161,8 +158,7 @@ class Dashboard:
                 ], id="page-performance-insights", style={"display": "none"}),
 
                 html.Div([
-                    html.H2("Customer Insights"),
-                    dcc.Graph(id="density-heatmap-fig")  # Fehlendes Diagramm einfügen
+                    html.H2("Customer Insights")
                 ], id="page-customer-insights", style={"display": "none"}),
 
                 html.Div([
@@ -190,15 +186,12 @@ class Dashboard:
             [Output("overview-section", "children"),
              Output("feature-importance", "figure"),
              Output("correlation-heatmap", "figure"),
-             Output("scatter-footfall-revenue", "figure"),
              Output("scatter-marketing-revenue", "figure"),
              Output("scatter-competitor-revenue", "figure"),
              Output("box-plot-category", "figure"),
              Output("map-visualization", "figure"),
              Output("grouped-bar-chart", "figure"),
-             Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
-             Output("density-heatmap-fig", "figure"),
              Output("recommendations-section", "children")],
             Input("feature-importance", "id")  # Dummy input to trigger callback
         )
@@ -214,9 +207,7 @@ class Dashboard:
             heatmap_fig = KeyInfluencersTab.create_correlation_heatmap(df)
 
             # Funktionen/Diagramme des PerformanceInsights-Tabs
-            scatter_footfall_fig = PerformanceInsightsTab.create_scatter_footfall_revenue(df)
             scatter_marketing_fig = PerformanceInsightsTab.create_scatter_marketing_revenue(df)
-            scatter_competitor_fig = PerformanceInsightsTab.create_scatter_competitor_revenue(df)
             box_plot_category_fig = PerformanceInsightsTab.create_box_plot_category(df)
 
             # Funktionen/Diagramme des RegionalComparison-Tabs
@@ -227,15 +218,12 @@ class Dashboard:
             bubble_chart_fig = StoreOperationsTab.create_bubble_chart_operations(df)
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
-            #Funktionen/Diagramme des CustomerInsight-Tabs
-            density_heatmap_fig = CustomerInsightsTab.create_customer_heatmap(df)
-
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section()
 
-            return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig,
-                    scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
-                    map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, density_heatmap_fig, recommendations)
+            return (overview, feature_importance_fig, heatmap_fig,
+                    scatter_marketing_fig, box_plot_category_fig,
+                    map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
 
