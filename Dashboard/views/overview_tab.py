@@ -31,7 +31,7 @@ class OverviewTab:
 
         # Sektion erstellen
         return html.Div([
-            html.H3("Overview"),
+            html.H3("Alle Zahlen in k$"),
             html.Ul([
                 html.Li(f"Total Monthly Sales Revenue: ${total_revenue:,.2f}"),
                 html.Li(f"Average Customer Footfall: {avg_footfall:,.0f}"),
