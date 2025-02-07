@@ -148,8 +148,9 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Store Operations"),
+                    dcc.Graph(id="scatter-productvariety-revenue"),
                     dcc.Graph(id="bubble-chart-operations"),
-                    dcc.Graph(id="histogram-efficiency")
+                    dcc.Graph(id="histogram-efficiency"),
                 ], id="page-store-operations", style={"display": "none"}),
 
                 html.Div([
@@ -173,6 +174,7 @@ class Dashboard:
              Output("box-plot-category", "figure"),
              Output("map-visualization", "figure"),
              Output("grouped-bar-chart", "figure"),
+             Output("scatter-productvariety-revenue", "figure"),
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
              Output("recommendations-section", "children")],
@@ -204,6 +206,7 @@ class Dashboard:
             scatter_competitor_fig = RegionalComparisonTab.create_scatter_competitor_revenue(df)
 
             # Funktionen/Diagramme des StoreOperations-Tabs
+            scatter_productvariety_revenue_fig = StoreOperationsTab.create_scatter_productvariety_revenue(df)
             bubble_chart_fig = StoreOperationsTab.create_bubble_chart_operations(df)
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
@@ -212,7 +215,7 @@ class Dashboard:
 
             return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
-                    map_fig, grouped_bar_fig, bubble_chart_fig, histogram_fig, recommendations)
+                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
 

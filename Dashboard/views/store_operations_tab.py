@@ -1,6 +1,7 @@
 import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierung
 
 class StoreOperationsTab:
+
     @staticmethod
     def create_bubble_chart_operations(df):
         """Erzeugt das Blasendiagramm für Filialgröße, Effizienz und Umsatz."""
@@ -17,3 +18,34 @@ class StoreOperationsTab:
                             title="Employee Efficiency Distribution",
                             labels={"EmployeeEfficiency": "Efficiency"},
                             hover_data=["StoreID"])
+
+    @staticmethod
+    def create_scatter_productvariety_revenue(df):
+        """
+        Erzeugt ein Streudiagramm, das den Zusammenhang zwischen Produktvielfalt und Umsatz darstellt.
+
+        - X-Achse: ProductVariety (Produktvielfalt)
+        - Y-Achse: MonthlySalesRevenue (Monatlicher Umsatz)
+        - Farb-Codierung: StoreCategory (um branchenspezifische Unterschiede hervorzuheben)
+        - Trendlinie: Fügt eine lineare Regressionslinie hinzu (OLS), um den Trend visuell zu unterstützen.
+
+        Intern wird dazu das statsmodels-Paket verwendet, um ein OLS-Modell zu berechnen, das die optimale
+        Regressionsgerade (y = m * x + b) findet, indem die Summe der quadrierten Abweichungen minimiert wird.
+        Hinweis: Für die Nutzung von trendline="ols" muss das Paket statsmodels installiert sein.
+
+        Dieses Diagramm untersucht, ob eine höhere Produktvielfalt mit einem höheren Umsatz einhergeht. (JPG)
+        """
+        fig = px.scatter(
+            df,
+            x="ProductVariety",
+            y="MonthlySalesRevenue",
+            color="StoreCategory",
+            trendline="ols",  # Trendlinie als lineare Regression (OLS)
+            title="Product Variety vs Revenue",
+            labels={
+                "ProductVariety": "Product Variety",
+                "MonthlySalesRevenue": "Revenue"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
