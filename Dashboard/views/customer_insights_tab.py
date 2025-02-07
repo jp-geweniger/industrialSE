@@ -115,3 +115,31 @@ class CustomerInsightsTab:
             }
         )
         return fig
+
+    @staticmethod
+    def create_scatter_productvariety_vs_footfall(df):
+        """
+        Erzeugt ein Streudiagramm mit Trendlinie, das den Zusammenhang zwischen Produktvielfalt
+        (ProductVariety) und Kundenbesuchen (CustomerFootfall) darstellt. (JPG)
+
+        - X-Achse: ProductVariety (Produktvielfalt)
+        - Y-Achse: CustomerFootfall (Anzahl der Kundenbesuche)
+        - Farb-Codierung: StoreCategory
+        - Trendlinie: Fügt eine lineare Regression (OLS) hinzu
+
+        Die lineare Regression funktioniert wie in den obigen Beispielen.
+        """
+        fig = px.scatter(
+            df,
+            x="ProductVariety",
+            y="CustomerFootfall",
+            color="StoreCategory",
+            trendline="ols",  # Fügt die lineare Regressionslinie hinzu
+            title="Product Variety vs Customer Footfall",
+            labels={
+                "ProductVariety": "Product Variety (Produktvielfalt)",
+                "CustomerFootfall": "Customer Footfall (Kundenbesuche)"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
