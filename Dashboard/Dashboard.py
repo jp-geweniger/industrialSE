@@ -227,7 +227,7 @@ class Dashboard:
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
-
+        #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)
         @self.app.callback(
             [Output("comparison-output", "children"),
              Output("comparison-bar-chart", "figure"),
@@ -238,7 +238,7 @@ class Dashboard:
              State("compare-metrics", "value")]
         )
         def update_comparison(n_clicks, first, second, metrics):
-            """Erzeugt Vergleichsmetriken und Diagramme..."""
+            """Erzeugt Vergleichsmetriken und Diagramme...(DM)"""
             if not first or not second or not metrics:
                 return "Please select two stores/regions and at least one metric.", go.Figure(), go.Figure()
 

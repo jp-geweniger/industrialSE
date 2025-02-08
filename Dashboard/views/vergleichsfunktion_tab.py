@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 import pandas as pd
 from scripts.sqlite_connector import SQLiteConnector
 
-
+        #Comparison function (DM)
 class VergleichsfunktionTab:
     """Tab for comparing two stores or regions across multiple metrics."""
 
@@ -26,11 +26,13 @@ class VergleichsfunktionTab:
 
         # Separate regions and stores
         unique_locations = df["StoreLocation"].dropna().unique()
-        unique_stores = df[["StoreID", "StoreLocation"]].drop_duplicates()
+        unique_stores = df[["StoreID", "StoreLocation", "StoreCategory"]].drop_duplicates()
+
 
         # Prepare dropdowns
         location_options = [{"label": f"Region: {loc}", "value": loc} for loc in unique_locations]
-        store_options = [{"label": f"Store {row['StoreID']} ({row['StoreLocation']})", "value": row['StoreID']}
+        store_options = [{"label": f"Store {row['StoreID']} ({row['StoreLocation']}, {row['StoreCategory']})",
+                          "value": row['StoreID']}
                          for _, row in unique_stores.iterrows()]
 
         # Merge stores and regions into the dropdown
@@ -85,8 +87,14 @@ class VergleichsfunktionTab:
         second_avg = second_data[available_metrics].mean(skipna=True)
 
         # Generate comparison results
+        first_category = first_data["StoreCategory"].iloc[0] if "StoreCategory" in first_data.columns else "Unknown"
+        second_category = second_data["StoreCategory"].iloc[0] if "StoreCategory" in second_data.columns else "Unknown"
         comparison_result = [
-            html.Li(f"{metric}: Higher in {'first' if first_avg[metric] > second_avg[metric] else 'second'}")
+            html.Li(
+                f"{metric}: {first_avg[metric]:.2f} vs. {second_avg[metric]:.2f} → "
+                f"{'Higher in First' if first_avg[metric] > second_avg[metric] else 'Higher in Second'} "
+                f"({first_category} vs. {second_category})"
+            )
             for metric in available_metrics
         ]
 
@@ -101,14 +109,17 @@ class VergleichsfunktionTab:
 
         if first_is_store:
             first_data = df[df["StoreID"] == int(first)]
-            first_label = f"Store {int(first)}"
+            first_category = first_data["StoreCategory"].iloc[0] if "StoreCategory" in first_data.columns else "Unknown"
+            first_label = f"Store {int(first)} ({first_data['StoreLocation'].iloc[0]}, {first_category})"
         else:
             first_data = df[df["StoreLocation"] == first]
             first_label = f"Region: {first}"
 
         if second_is_store:
             second_data = df[df["StoreID"] == int(second)]
-            second_label = f"Store {int(second)}"
+            second_category = second_data["StoreCategory"].iloc[
+                0] if "StoreCategory" in second_data.columns else "Unknown"
+            second_label = f"Store {int(second)} ({second_data['StoreLocation'].iloc[0]}, {second_category})"
         else:
             second_data = df[df["StoreLocation"] == second]
             second_label = f"Region: {second}"
@@ -122,7 +133,7 @@ class VergleichsfunktionTab:
         if not available_metrics:
             return go.Figure(layout={"title": "No valid metrics selected"})
 
-        # Compute mean while handling missing values
+
         first_avg = first_data[available_metrics].mean(skipna=True)
         second_avg = second_data[available_metrics].mean(skipna=True)
 
@@ -166,6 +177,24 @@ class VergleichsfunktionTab:
         revenue_first = first_data["MonthlySalesRevenue"].sum()
         revenue_second = second_data["MonthlySalesRevenue"].sum()
 
-        fig = go.Figure(data=[go.Pie(labels=[first, second], values=[revenue_first, revenue_second], hole=0.4)])
+        # Generate labels including category
+        if first_is_store:
+            first_category = first_data["StoreCategory"].iloc[0] if "StoreCategory" in first_data.columns else "Unknown"
+            first_label = f"Store {int(first)} ({first_data['StoreLocation'].iloc[0]}, {first_category})"
+        else:
+            first_label = f"Region: {first}"
+
+        if second_is_store:
+            second_category = second_data["StoreCategory"].iloc[
+                0] if "StoreCategory" in second_data.columns else "Unknown"
+            second_label = f"Store {int(second)} ({second_data['StoreLocation'].iloc[0]}, {second_category})"
+        else:
+            second_label = f"Region: {second}"
+
+        # Jetzt erst die Umsatzdaten berechnen
+        revenue_first, revenue_second = first_data["MonthlySalesRevenue"].sum(), second_data["MonthlySalesRevenue"].sum()
+
+        labels = [first_label, second_label]
+        fig = go.Figure(data=[go.Pie(labels=labels, values=[revenue_first, revenue_second], hole=0.4)])
         fig.update_layout(title="Revenue Distribution Between Selected Stores/Regions")
         return fig
