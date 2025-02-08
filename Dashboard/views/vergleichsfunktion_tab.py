@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 from dash import dcc, html
 
-        #Comparison function (DM)
+        #Comparison function (DM - Davronbek Mavlonov)
 class VergleichsfunktionTab:
     """Tab for comparing two stores or regions across multiple metrics. (DM)"""
 
@@ -83,8 +83,15 @@ class VergleichsfunktionTab:
         second_avg = second_data[available_metrics].mean(skipna=True)
 
         # Generate comparison results
-        first_category = first_data["StoreCategory"].iloc[0] if "StoreCategory" in first_data.columns else "Unknown"
-        second_category = second_data["StoreCategory"].iloc[0] if "StoreCategory" in second_data.columns else "Unknown"
+        first_category = (
+            first_data["StoreCategory"].iloc[
+                0] if first_is_store and "StoreCategory" in first_data.columns else "Multiple Categories"
+        )
+        second_category = (
+            second_data["StoreCategory"].iloc[
+                0] if second_is_store and "StoreCategory" in second_data.columns else "Multiple Categories"
+        )
+
         comparison_result = [
             html.Li(
                 f"{metric}: {first_avg[metric]:.2f} vs. {second_avg[metric]:.2f} → "
