@@ -1,7 +1,28 @@
-import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierung
+import plotly.express as px
+import numpy as np
 
 class CustomerInsightsTab:
-    """View für Kundenbezogene Einblicke. (JPG und JE)"""
+
+    @staticmethod
+    def create_scatter_footfall_revenue(df):
+        """Erzeugt das Streudiagramm für Kundenfrequenz vs. Umsatz mit einer eigenen Regressionslinie."""
+
+        # Berechne die Regressionsgerade
+        x = df["CustomerFootfall"]
+        y = df["MonthlySalesRevenue"]
+        m, b = np.polyfit(x, y, 1)  # lineare Regression (y = mx + b)
+
+        # Erstelle das Scatter-Plot
+        fig = px.scatter(df, x="CustomerFootfall", y="MonthlySalesRevenue",
+                         title="Customer Footfall vs Revenue",
+                         labels={"CustomerFootfall": "Customer Footfall", "MonthlySalesRevenue": "Revenue"},
+                         hover_data=["StoreID"])
+
+        # Füge die berechnete Regressionslinie hinzu
+        fig.add_scatter(x=x, y=m * x + b, mode="lines", name="Regression Line", line=dict(color="red"))
+
+        return fig
+
 
     @staticmethod
     def create_scatter_footfall_revenue(df):

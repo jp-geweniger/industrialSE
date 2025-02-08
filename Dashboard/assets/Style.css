@@ -17,7 +17,7 @@ body {
 }
 
 .sidebar a, .sidebar button {
-    color: white !important; /* Schriftfarbe weiß */
+    color: #000000 !important; /* Schriftfarbe weiß */
     font-weight: bold;
     padding: 10px;
     display: block;

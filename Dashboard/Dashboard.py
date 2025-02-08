@@ -1,7 +1,5 @@
 import dash  # Framework zum Erstellen von Webanwendungen
 from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
-import plotly.graph_objects as go
-from views.vergleichsfunktion_tab import VergleichsfunktionTab
 from scripts.sqlite_connector import SQLiteConnector
 from views.overview_tab import OverviewTab
 from views.key_influencers_tab import KeyInfluencersTab
@@ -15,7 +13,6 @@ from views.customer_insights_tab import CustomerInsightsTab
 class Dashboard:
     def __init__(self, db_path):
         self.db_connector = SQLiteConnector(db_path)
-        self.vergleichsfunktion_tab = VergleichsfunktionTab(self.db_connector)
         self.app = dash.Dash(__name__)
         self.setup_layout()
         self.setup_callbacks()
@@ -125,8 +122,9 @@ class Dashboard:
                     dcc.Graph(id="correlation-heatmap")
                 ], id="page-key-influencers", style={"display": "none"}),
 
-                html.Div(self.vergleichsfunktion_tab.create_comparison_section(), id="page-vergleichsfunktion",
-                         style={"display": "none"}),
+                html.Div([
+                    html.H2("Vergleichsfunktion")
+                ], id="page-vergleichsfunktion", style={"display": "none"}),
 
                 html.Div([
                     html.H2("Performance Insights"),
@@ -159,8 +157,10 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Recommendations"),
+                    dcc.Dropdown(id="store-dropdown", options=[], placeholder="Store auswählen...", value=None),
+                    # Hier vorinitialisiert
                     html.Div(id="recommendations-section")
-                ], id="page-recommendations", style={"display": "none"}),
+                ], id="page-recommendations", style={"display": "none"})
             ], id="page-content", style={"margin-left": "220px", "padding": "20px"})
         ])
 
@@ -184,10 +184,9 @@ class Dashboard:
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
              Output("recommendations-section", "children")],
-            Input("feature-importance", "id")  # Dummy trigger
+            [Input("store-dropdown", "value")]# Dummy input to trigger callback
         )
-
-        def update_dashboard(_):
+        def update_dashboard(selected_store):
             """Erzeugt das Dashboard im Gesamten."""
             df = self.db_connector.fetch_data("SELECT * FROM StoreData")
 
@@ -220,35 +219,13 @@ class Dashboard:
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
             # Funktionen/Diagramme des Recommendations-Tabs
-            recommendations = RecommendationsTab.create_recommendations_section()
+            recommendations = RecommendationsTab.create_recommendations_section(df, selected_store)
 
             return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
-
-        @self.app.callback(
-            [Output("comparison-output", "children"),
-             Output("comparison-bar-chart", "figure"),
-             Output("comparison-pie-chart", "figure")],
-            Input("compare-button", "n_clicks"),
-            [State("compare-first", "value"),
-             State("compare-second", "value"),
-             State("compare-metrics", "value")]
-        )
-        def update_comparison(n_clicks, first, second, metrics):
-            """Erzeugt Vergleichsmetriken und Diagramme..."""
-            if not first or not second or not metrics:
-                return "Please select two stores/regions and at least one metric.", go.Figure(), go.Figure()
-
-            df = self.db_connector.fetch_data("SELECT * FROM StoreData")
-
-            comparison_metrics = self.vergleichsfunktion_tab.generate_comparison_metrics(df, first, second, metrics)
-            bar_chart = self.vergleichsfunktion_tab.create_comparison_bar_chart(df, first, second, metrics)
-            pie_chart = self.vergleichsfunktion_tab.create_comparison_pie_chart(df, first, second)
-
-            return comparison_metrics, bar_chart, pie_chart
 
         # Callback zur Hervorhebung des aktiven Tabs in der Sidebar (JPG)
         @self.app.callback(
@@ -305,6 +282,7 @@ class Dashboard:
             Output("page-store-operations", "style"),
             Output("page-recommendations", "style"),
             Input("url", "pathname")
+
         )
         def display_page(pathname):
             hidden = {"display": "none"}
