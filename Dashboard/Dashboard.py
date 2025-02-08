@@ -232,7 +232,7 @@ class Dashboard:
              State("compare-metrics", "value")]
         )
         def update_comparison(n_clicks, first, second, metrics):
-            """Erzeugt Vergleichsmetriken und Diagramme."""
+            """Erzeugt Vergleichsmetriken und Diagramme..."""
             if not first or not second or not metrics:
                 return "Please select two stores/regions and at least one metric.", go.Figure(), go.Figure()
 

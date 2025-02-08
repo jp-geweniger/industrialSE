@@ -91,7 +91,7 @@ class VergleichsfunktionTab:
         ]
 
         return html.Ul(comparison_result)
-
+#bar chart
     def create_comparison_bar_chart(self, df, first, second, metrics):
         """Creates a grouped bar chart for selected metrics."""
 
@@ -138,7 +138,7 @@ class VergleichsfunktionTab:
             yaxis_title="Metric Value"
         )
         return fig
-
+#pie chart
     def create_comparison_pie_chart(self, df, first, second):
         """Creates a pie chart comparing total revenue of the two selections."""
 
