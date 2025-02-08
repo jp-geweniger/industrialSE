@@ -47,19 +47,30 @@ class RecommendationsTab:
         # Berechne den Mittelwert nur für numerische Spalten
         avg_values = numeric_df.mean()
 
-        # Generiere Empfehlungen basierend auf den Durchschnittswerten
+        # Generiere spezifische Empfehlungen
         recommendations = []
-        for col in avg_values.index:
-            if col in store_data.columns:
-                store_value = store_data[col].values[0]  # Wert des ausgewählten Stores
-                avg_value = avg_values[col]  # Durchschnittswert aller anderen Stores
 
-                if store_value < avg_value:
-                    recommendations.append(html.P(f"🔻 {col}: Wert {store_value:.2f} liegt unter dem Durchschnitt ({avg_value:.2f}). Verbesserungspotenzial!"))
-                else:
-                    recommendations.append(html.P(f"✅ {col}: Wert {store_value:.2f} ist überdurchschnittlich."))
+        # 🔥 Umsatzsteigerung
+        if "MonthlySalesRevenue" in store_data.columns and "MonthlySalesRevenue" in avg_values:
+            if store_data["MonthlySalesRevenue"].values[0] < avg_values["MonthlySalesRevenue"]:
+                recommendations.append(html.P("📊 Erhöhe das Marketingbudget, um den Umsatz zu steigern."))
 
-        # Falls keine Empfehlungen notwendig sind
+        # 🔥 Kundenfrequenz verbessern
+        if "CustomerFootfall" in store_data.columns and "CustomerFootfall" in avg_values:
+            if store_data["CustomerFootfall"].values[0] < avg_values["CustomerFootfall"]:
+                recommendations.append(html.P("👥 Plane mehr Promotion-Events, um mehr Kunden anzulocken."))
+
+        # 🔥 Werbeaktionen optimieren
+        if "PromotionsCount" in store_data.columns and "PromotionsCount" in avg_values:
+            if store_data["PromotionsCount"].values[0] < avg_values["PromotionsCount"]:
+                recommendations.append(html.P("🎯 Nutze gezieltere Werbeaktionen zur Steigerung der Kundenfrequenz."))
+
+        # 🔥 Mitarbeiterschulung verbessern
+        if "EmployeeEfficiency" in store_data.columns and "EmployeeEfficiency" in avg_values:
+            if store_data["EmployeeEfficiency"].values[0] < avg_values["EmployeeEfficiency"]:
+                recommendations.append(html.P("📚 Optimiere die Mitarbeiterschulung, um die Effizienz zu erhöhen."))
+
+        # Falls keine spezifischen Empfehlungen notwendig sind
         if not recommendations:
             recommendations.append(html.P("✅ Der Store ist in allen Bereichen überdurchschnittlich!"))
 
