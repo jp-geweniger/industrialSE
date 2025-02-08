@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 from dash import dcc, html
 
-        #Comparison function (DM)
+        #Comparison function (DM - Davronbek Mavlonov)
 class VergleichsfunktionTab:
     """Tab for comparing two stores or regions across multiple metrics. (DM)"""
 
