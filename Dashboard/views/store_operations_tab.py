@@ -49,3 +49,32 @@ class StoreOperationsTab:
             hover_data=["StoreID"]
         )
         return fig
+
+    @staticmethod
+    def create_scatter_productvariety_efficiency(df):
+        """
+        Erzeugt ein Streudiagramm mit Trendlinie, das den Zusammenhang zwischen
+        der Produktvielfalt (ProductVariety) und der Mitarbeitereffizienz (EmployeeEfficiency) darstellt.
+
+        - X-Achse: ProductVariety (Anzahl der verschiedenen Produkte im Store)
+        - Y-Achse: EmployeeEfficiency (Mitarbeitereffizienz, Skala 0–100)
+        - Farb-Codierung: StoreCategory (zeigt branchenspezifische Unterschiede)
+        - Trendlinie: Fügt eine lineare Regressionslinie (OLS) hinzu, die den allgemeinen Trend
+          zwischen Produktvielfalt und Effizienz verdeutlicht.
+
+        Die lineare Regression funktionier ähnlich wie im obigen Beispiel. (JPG)
+        """
+        fig = px.scatter(
+            df,
+            x="ProductVariety",
+            y="EmployeeEfficiency",
+            color="StoreCategory",
+            trendline="ols",  # Fügt eine lineare Regressions-Trendlinie hinzu
+            title="Product Variety vs Employee Efficiency",
+            labels={
+                "ProductVariety": "Product Variety (Anzahl der verschiedenen Produkte)",
+                "EmployeeEfficiency": "Employee Efficiency (Skala 0–100)"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
