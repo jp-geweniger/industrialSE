@@ -4,6 +4,38 @@ class CustomerInsightsTab:
     """View für Kundenbezogene Einblicke. (JPG und JE)"""
 
     @staticmethod
+    def create_barchart_category_footfall(df):
+        """
+        Erzeugt ein Balkendiagramm, das den durchschnittlichen CustomerFootfall
+        (Kundenbesuche) pro StoreCategory darstellt. (JPG)
+
+        - X-Achse: StoreCategory
+        - Y-Achse: Durchschnittlicher CustomerFootfall
+
+        Vorgehensweise:
+        1. Gruppierung des DataFrames nach StoreCategory und Berechnung des Durchschnitts
+           der CustomerFootfall für jede Kategorie.
+        2. Darstellung der Ergebnisse in einem Balkendiagramm, um die durchschnittliche
+           Kundenfrequenz je Kategorie anschaulich zu visualisieren.
+        """
+        # Gruppiere nach StoreCategory und berechne den Durchschnitt der CustomerFootfall
+        df_grouped = df.groupby("StoreCategory", as_index=False)["CustomerFootfall"].mean()
+
+        # Erstelle das Balkendiagramm
+        fig = px.bar(
+            df_grouped,
+            x="StoreCategory",
+            y="CustomerFootfall",
+            title="Average Customer Footfall pro Kategorie",
+            labels={
+                "StoreCategory": "Store Category",
+                "CustomerFootfall": "Average Customer Footfall"
+            },
+            hover_data=["CustomerFootfall"]
+        )
+        return fig
+
+    @staticmethod
     def create_scatter_footfall_revenue(df):
         """
         Erzeugt das Streudiagramm für Customer Footfall vs. Monthly Sales Revenue. (JE und JPG)
@@ -48,6 +80,34 @@ class CustomerInsightsTab:
             labels={
                 "CustomerFootfall": "Customer Footfall",
                 "MonthlySalesRevenue": "Revenue"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
+
+    @staticmethod
+    def create_scatter_marketing_footfall(df):
+        """
+        Erzeugt ein Streudiagramm mit Trendlinie, das den Zusammenhang zwischen Marketing-Ausgaben
+        (MarketingSpend, in Tausend $) und der Anzahl der Kunden im Monat (CustomerFootfall) darstellt. (JPG)
+
+        - X-Achse: MarketingSpend (Marketing-Ausgaben in Tausend $)
+        - Y-Achse: CustomerFootfall (Anzahl der Kunden im Monat)
+        - Farb-Codierung: StoreCategory (zeigt, ob der Effekt je nach Store-Typ unterschiedlich ist)
+        - Trendlinie: Fügt eine lineare Regression (OLS) hinzu, um den generellen Trend zu verdeutlichen.
+
+        Die lineare Regression funktioniert hier ähnlich wie im vorherigen Beispiel.
+        """
+        fig = px.scatter(
+            df,
+            x="MarketingSpend",
+            y="CustomerFootfall",
+            color="StoreCategory",
+            trendline="ols",  # Trendlinie mittels linearer Regression (OLS)
+            title="Marketing Spend vs Customer Footfall",
+            labels={
+                "MarketingSpend": "Marketing Spend (in Tausend $)",
+                "CustomerFootfall": "Customer Footfall (Anzahl der Kunden im Monat)"
             },
             hover_data=["StoreID"]
         )

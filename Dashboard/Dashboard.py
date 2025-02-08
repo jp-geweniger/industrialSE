@@ -136,8 +136,10 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Customer Insights"),
+                    dcc.Graph(id="barchart_category_footfall"),
                     dcc.Graph(id="scatter-footfall-revenue"),
                     dcc.Graph(id="scatter-productvariety-footfall"),
+                    dcc.Graph(id="scatter-marketing-footfall"),
                     dcc.Graph(id="scatter-promotions-footfall"),
                     dcc.Graph(id="barchart-promotions-footfall"),
                 ], id="page-customer-insights", style={"display": "none"}),
@@ -147,6 +149,7 @@ class Dashboard:
                     dcc.Graph(id="map-visualization"),
                     dcc.Graph(id="grouped-bar-chart"),
                     dcc.Graph(id="scatter-competitor-revenue"),
+                    dcc.Graph(id="grouped-bar-chart-footfall"),
                 ], id="page-regional-comparison", style={"display": "none"}),
 
                 html.Div([
@@ -170,12 +173,15 @@ class Dashboard:
             [Output("overview-section", "children"),
              Output("feature-importance", "figure"),
              Output("correlation-heatmap", "figure"),
+             Output("barchart_category_footfall", "figure"),
              Output("scatter-footfall-revenue", "figure"),
              Output("scatter-productvariety-footfall", "figure"),
+             Output("scatter-marketing-footfall", "figure"),
              Output("scatter-promotions-footfall", "figure"),
              Output("barchart-promotions-footfall", "figure"),
              Output("scatter-marketing-revenue", "figure"),
              Output("scatter-competitor-revenue", "figure"),
+             Output("grouped-bar-chart-footfall", "figure"),
              Output("box-plot-category", "figure"),
              Output("map-visualization", "figure"),
              Output("grouped-bar-chart", "figure"),
@@ -203,8 +209,10 @@ class Dashboard:
             box_plot_category_fig = PerformanceInsightsTab.create_box_plot_category(df)
 
             # Funktionen/Diagramme des CustomerInsights-Tabs
+            barchart_category_footfall_fig = CustomerInsightsTab.create_barchart_category_footfall(df)
             scatter_footfall_fig = CustomerInsightsTab.create_scatter_footfall_revenue(df)
             scatter_productvariety_footfall_fig = CustomerInsightsTab.create_scatter_productvariety_vs_footfall(df)
+            scatter_marketing_footfall_fig = CustomerInsightsTab.create_scatter_marketing_footfall(df)
             scatter_promotions_footfall_fig = CustomerInsightsTab.create_scatter_promotions_footfall(df)
             barchart_promotions_footfall_fig = CustomerInsightsTab.create_bar_chart_promotions_vs_footfall(df)
 
@@ -212,6 +220,7 @@ class Dashboard:
             map_fig = RegionalComparisonTab.create_map_visualization(df)
             grouped_bar_fig = RegionalComparisonTab.create_grouped_bar_chart(df)
             scatter_competitor_fig = RegionalComparisonTab.create_scatter_competitor_revenue(df)
+            grouped_barchart_footfall_fig = RegionalComparisonTab.create_grouped_barchart_footfall(df)
 
             # Funktionen/Diagramme des StoreOperations-Tabs
             scatter_productvariety_revenue_fig = StoreOperationsTab.create_scatter_productvariety_revenue(df)
@@ -222,8 +231,8 @@ class Dashboard:
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section()
 
-            return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
-                    scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
+            return (overview, feature_importance_fig, heatmap_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
+                    scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """

@@ -294,3 +294,35 @@ class RegionalComparisonTab:
             }
         )
         return fig
+
+    @staticmethod
+    def create_grouped_barchart_footfall(df):
+        """
+        Erzeugt ein gruppiertes Balkendiagramm, das den durchschnittlichen CustomerFootfall
+        für jede StoreLocation (Stadt) und StoreCategory darstellt. (JPG)
+
+        - X-Achse: StoreLocation (Städte)
+        - Y-Achse: Durchschnittlicher CustomerFootfall
+        - Farbcodierung: StoreCategory
+
+        Für jede Kategorie wird ein separater Balken pro Stadt angezeigt.
+        """
+        # Gruppiere den DataFrame nach StoreLocation und StoreCategory und berechne den Durchschnitt von CustomerFootfall
+        df_grouped = df.groupby(["StoreLocation", "StoreCategory"], as_index=False)["CustomerFootfall"].mean()
+
+        # Erstelle das gruppierte Balkendiagramm:
+        fig = px.bar(
+            df_grouped,
+            x="StoreLocation",
+            y="CustomerFootfall",
+            color="StoreCategory",
+            barmode="group",  # Balken werden für jede Kategorie nebeneinander dargestellt
+            title="Average Customer Footfall by Store Location and Category",
+            labels={
+                "StoreLocation": "Store Location (Stadt)",
+                "CustomerFootfall": "Durchschnittlicher Customer Footfall",
+                "StoreCategory": "Store Category"
+            },
+            hover_data=["CustomerFootfall"]
+        )
+        return fig
