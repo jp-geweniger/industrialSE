@@ -1,13 +1,9 @@
 import plotly.graph_objects as go
-import plotly.express as px
 from dash import dcc, html
-from dash.dependencies import Input, Output
-import pandas as pd
-from scripts.sqlite_connector import SQLiteConnector
 
         #Comparison function (DM)
 class VergleichsfunktionTab:
-    """Tab for comparing two stores or regions across multiple metrics."""
+    """Tab for comparing two stores or regions across multiple metrics. (DM)"""
 
     def __init__(self, db_connector):
         self.db_connector = db_connector

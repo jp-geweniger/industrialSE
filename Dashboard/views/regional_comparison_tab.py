@@ -239,23 +239,54 @@ class RegionalComparisonTab:
 
     @staticmethod
     def create_grouped_bar_chart(df):
-        """Erzeugt das gruppierte Balkendiagramm für den Umsatz nach Standort und Kategorie."""
-        return px.bar(df, x="StoreLocation", y="MonthlySalesRevenue", color="StoreCategory",
-                      title="Revenue by Location and Category",
-                      labels={"MonthlySalesRevenue": "Revenue", "StoreLocation": "Location"},
-                      hover_data=["StoreID"])
+        """
+        Erzeugt ein gruppiertes Balkendiagramm, das den durchschnittlichen MonthlySalesRevenue
+        für jede StoreLocation (Stadt) und StoreCategory darstellt. (JPG)
+
+        - X-Achse: StoreLocation (Städte)
+        - Y-Achse: Durchschnittlicher MonthlySalesRevenue
+        - Farbkodierung: StoreCategory (z. B. Grocery, Electronics, Clothing)
+
+        Für jede Kategorie wird ein Balken pro Stadt angezeigt.
+        """
+        # Gruppiere den DataFrame nach StoreLocation und StoreCategory
+        # und berechne den Durchschnitt des MonthlySalesRevenue
+        df_grouped = df.groupby(["StoreLocation", "StoreCategory"], as_index=False)["MonthlySalesRevenue"].mean()
+
+        # Erstelle das gruppierte Balkendiagramm:
+        # - barmode="group" sorgt dafür, dass die Balken für verschiedene Kategorien nebeneinander stehen.
+        fig = px.bar(
+            df_grouped,
+            x="StoreLocation",
+            y="MonthlySalesRevenue",
+            color="StoreCategory",
+            barmode="group",
+            title="Average Monthly Sales Revenue by Store Location and Category",
+            labels={
+                "StoreLocation": "Store Location (Stadt)",
+                "MonthlySalesRevenue": "Durchschnittlicher Monthly Sales Revenue",
+                "StoreCategory": "Store Category"
+            },
+            hover_data=["MonthlySalesRevenue"]
+        )
+        return fig
 
     @staticmethod
     def create_scatter_competitor_revenue(df):
         """
         Erstellt ein Scatter Plot, das den Zusammenhang zwischen CompetitorDistance und MonthlySalesRevenue zeigt.
-        Dabei werden die Stores anhand ihrer StoreLocation farblich unterschieden. (JE und JPG)
+        Dabei werden die Stores anhand ihrer StoreLocation farblich unterschieden.
+        Zusätzlich wird eine Trendlinie mittels linearer Regression (OLS) hinzugefügt, die den generellen Trend
+        der Beziehung zwischen den beiden Variablen verdeutlicht.
+
+        Die Funktionsweise der trendline wurde bereits in Beispielen anderer Tabs dieses Projekts dokumentiert (JPG und JE)
         """
         fig = px.scatter(
             df,
             x="CompetitorDistance",
             y="MonthlySalesRevenue",
-            color="StoreLocation",  # unterschiedliche Farben für die verschiedenen Städte
+            color="StoreCategory",  # Farbcodierung nach StoreCategory, um branchenspezifische Unterschiede zu erkennen
+            trendline="ols",  # Trendlinie als lineare Regression (OLS)
             title="Competitor Distance vs. Revenue",
             labels={
                 "CompetitorDistance": "Competitor Distance",
