@@ -201,7 +201,7 @@ class Dashboard:
             overview = OverviewTab.create_overview_section(df)
 
             # Funktionen/Diagramme des KeyInfluencers-Tabs
-            feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure()
+            feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure(df)
             heatmap_fig = KeyInfluencersTab.create_correlation_heatmap(df)
 
             # Funktionen/Diagramme des PerformanceInsights-Tabs
@@ -235,7 +235,6 @@ class Dashboard:
                     scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
-        """ Navigation und View-Handling basierend auf der URL (JPG) """
         #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)
         @self.app.callback(
             [Output("comparison-output", "children"),
@@ -258,6 +257,8 @@ class Dashboard:
             pie_chart = self.vergleichsfunktion_tab.create_comparison_pie_chart(df, first, second)
 
             return comparison_metrics, bar_chart, pie_chart
+
+        """ Navigation und View-Handling basierend auf der URL (JPG) """
 
         # Callback zur Hervorhebung des aktiven Tabs in der Sidebar (JPG)
         @self.app.callback(
