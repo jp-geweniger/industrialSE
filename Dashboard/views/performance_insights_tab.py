@@ -1,6 +1,8 @@
 import plotly.express as px
 
+
 class PerformanceInsightsTab:
+    """Klasse für die Erstellung von Diagrammen im Performance Insights-Tab. (JE und JPG)"""
 
     @staticmethod
     def create_scatter_marketing_revenue(df):

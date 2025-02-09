@@ -1,5 +1,5 @@
 import plotly.express as px
-import numpy as np
+
 
 class CustomerInsightsTab:
     """View für Kundenbezogene Einblicke. (JPG und JE)"""
@@ -75,8 +75,9 @@ class CustomerInsightsTab:
             df,
             x="CustomerFootfall",
             y="MonthlySalesRevenue",
-            color="StoreCategory",  # Farb-Codierung nach StoreCategory: Unterscheidet die Datenpunkte anhand ihrer Kategorie. (JPG)
-            trendline="ols",        # Fügt eine Trendline mittels linearer Regression (OLS) hinzu. (JPG)
+            color="StoreCategory",
+            # Farb-Codierung nach StoreCategory: Unterscheidet die Datenpunkte anhand ihrer Kategorie. (JPG)
+            trendline="ols",  # Fügt eine Trendline mittels linearer Regression (OLS) hinzu. (JPG)
             title="Customer Footfall vs Revenue",
             labels={
                 "CustomerFootfall": "Customer Footfall",

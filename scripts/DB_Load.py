@@ -6,6 +6,8 @@ import os
 DB_PATH = "Database.db"
 CSV_PATH = "../data/Store_CA Überarbeitet.csv"  # Falls CSV woanders liegt, hier anpassen
 
+""" JE """
+
 
 def create_database():
     """Erstellt die SQLite-Datenbank, falls sie nicht existiert."""

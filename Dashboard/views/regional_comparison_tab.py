@@ -2,6 +2,7 @@ import plotly.graph_objects as go  # Detaillierte Schnittstelle zum Erstellen vo
 import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierung
 import math
 
+
 class RegionalComparisonTab:
     """ View für Regionale bzw. Standortvergleiche (JPG)"""
 
@@ -26,9 +27,9 @@ class RegionalComparisonTab:
     @staticmethod
     def create_map_visualization(df):
         """Erzeugt die Kartenvisualisierung für die Filialverteilung nach Kategorie und Umsatz."""
-        regional_comparison = RegionalComparisonTab() # Instanz der Klasse erstellen
+        regional_comparison = RegionalComparisonTab()  # Instanz der Klasse erstellen
 
-        coordinates = regional_comparison.get_all_coordinates(df) # Koordinaten für Städte abfragen
+        coordinates = regional_comparison.get_all_coordinates(df)  # Koordinaten für Städte abfragen
 
         # Aggregieren der Daten pro Stadt und Kategorie
         city_category_stats = df.groupby(['StoreLocation', 'StoreCategory']).agg({
@@ -96,7 +97,8 @@ class RegionalComparisonTab:
     def add_city_labels(map_fig, coordinates, city_category_stats):
         """Fügt Namen der Städte in Karte hinzu"""
         city_categories = RegionalComparisonTab.get_city_categories(city_category_stats)
-        city_labels_lats, city_labels_lons, city_names = RegionalComparisonTab.get_city_label_positions(coordinates, city_categories)
+        city_labels_lats, city_labels_lons, city_names = RegionalComparisonTab.get_city_label_positions(coordinates,
+                                                                                                        city_categories)
 
         # Fügt Stadtlabels als separate Trace hinzu
         map_fig.add_trace(go.Scattergeo(
@@ -153,7 +155,8 @@ class RegionalComparisonTab:
             category_data = city_category_stats[city_category_stats['StoreCategory'] == category]
 
             # Hole die Positionen der Marker für die aktuelle Kategorie
-            lats, lons = RegionalComparisonTab.get_category_marker_positions(category_data, coordinates, city_categories, category)
+            lats, lons = RegionalComparisonTab.get_category_marker_positions(category_data, coordinates,
+                                                                             city_categories, category)
 
             # Bestimme den minimalen und maximalen Umsatz für die Farbskala
             min_revenue = city_category_stats['MonthlySalesRevenue'].min()
@@ -236,7 +239,6 @@ class RegionalComparisonTab:
         lon_offset = radius * math.cos(angle)
 
         return base_lat + lat_offset, base_lon + lon_offset
-
 
     @staticmethod
     def create_grouped_bar_chart(df):

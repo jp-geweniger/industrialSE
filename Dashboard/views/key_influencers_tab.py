@@ -8,12 +8,15 @@ from sklearn.linear_model import LinearRegression
 # CustomerFootfall und ProductVariety auf den Umsatz zu analysieren.
 
 from sklearn.preprocessing import StandardScaler
+
+
 # Importiert den StandardScaler, der verwendet wird, um die Merkmalswerte zu standardisieren.
 # Die Standardisierung transformiert die Daten so, dass sie einen Mittelwert von 0 und eine
 # Standardabweichung von 1 haben. Dies ist wichtig, damit die Koeffizienten des Regressionsmodells
 # vergleichbar sind, insbesondere wenn die Features unterschiedliche Skalen haben.
 
 class KeyInfluencersTab:
+    """Klasse für die Erstellung von Diagrammen im Key Influencers-Tab. (JPG und JE)"""
 
     @staticmethod
     def create_feature_importance_figure(df):
@@ -38,7 +41,8 @@ class KeyInfluencersTab:
         """
 
         # Definiert die unabhängigen Variablen und das Ziel
-        features = ["MarketingSpend", "CustomerFootfall", "ProductVariety", "StoreSize", "StoreAge", "EmployeeEfficiency", "CompetitorDistance", "PromotionsCount", "EconomicIndicator"]
+        features = ["MarketingSpend", "CustomerFootfall", "ProductVariety", "StoreSize", "StoreAge",
+                    "EmployeeEfficiency", "CompetitorDistance", "PromotionsCount", "EconomicIndicator"]
         target = "MonthlySalesRevenue"
 
         # Entfernt Zeilen mit fehlenden Werten in den relevanten Spalten
@@ -171,7 +175,8 @@ class KeyInfluencersTab:
         Hinweis: Für diese Methode müssen die Bibliotheken scikit-learn (sklearn) und plotly.express installiert sein.
         """
         # Definiere die unabhängigen Variablen (Features) und das Ziel (Target)
-        features = ["MarketingSpend", "PromotionsCount", "StoreSize", "ProductVariety", "StoreAge", "CompetitorDistance", "EconomicIndicator"]
+        features = ["MarketingSpend", "PromotionsCount", "StoreSize", "ProductVariety", "StoreAge",
+                    "CompetitorDistance", "EconomicIndicator"]
         target = "CustomerFootfall"
 
         # Entferne Zeilen mit fehlenden Werten in den relevanten Spalten

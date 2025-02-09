@@ -1,6 +1,7 @@
 from dash import html, dcc
 import plotly.express as px
 
+
 class OverviewTab:
     @staticmethod
     def create_overview_section(df):
@@ -29,10 +30,12 @@ class OverviewTab:
         ].reset_index(drop=True)
 
         # Städte Ranking nach Umsatz
-        city_ranking = df.groupby("StoreLocation")["MonthlySalesRevenue"].sum().sort_values(ascending=False).reset_index()
+        city_ranking = df.groupby("StoreLocation")["MonthlySalesRevenue"].sum().sort_values(
+            ascending=False).reset_index()
 
         # Kategorie Ranking nach Umsatz
-        category_ranking = df.groupby("StoreCategory")["MonthlySalesRevenue"].sum().sort_values(ascending=False).reset_index()
+        category_ranking = df.groupby("StoreCategory")["MonthlySalesRevenue"].sum().sort_values(
+            ascending=False).reset_index()
 
         # Anzahl der Stores pro Kategorie (Daten für das Kuchendiagramm)
         stores_per_category = df.groupby("StoreCategory").size().reset_index(name="StoreCount")
@@ -63,9 +66,12 @@ class OverviewTab:
                             html.Div(
                                 [
                                     html.Span("🏆", style={"margin-right": "10px", "font-size": "20px"}),
-                                    html.Span(f"Store {row['StoreID']}", style={"font-weight": "bold", "margin-right": "10px"}),
-                                    html.Span(f"({row['StoreCategory']}, {row['StoreLocation']})", style={"color": "#555"}),
-                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}", style={"color": "#4CAF50", "margin-left": "10px"})
+                                    html.Span(f"Store {row['StoreID']}",
+                                              style={"font-weight": "bold", "margin-right": "10px"}),
+                                    html.Span(f"({row['StoreCategory']}, {row['StoreLocation']})",
+                                              style={"color": "#555"}),
+                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}",
+                                              style={"color": "#4CAF50", "margin-left": "10px"})
                                 ],
                                 style={"display": "flex", "align-items": "center", "margin-bottom": "5px"}
                             )
@@ -94,9 +100,12 @@ class OverviewTab:
                             html.Div(
                                 [
                                     html.Span("❌", style={"margin-right": "10px", "font-size": "20px"}),
-                                    html.Span(f"Store {row['StoreID']}", style={"font-weight": "bold", "margin-right": "10px"}),
-                                    html.Span(f"({row['StoreCategory']}, {row['StoreLocation']})", style={"color": "#555"}),
-                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}", style={"color": "#e53935", "margin-left": "10px"})
+                                    html.Span(f"Store {row['StoreID']}",
+                                              style={"font-weight": "bold", "margin-right": "10px"}),
+                                    html.Span(f"({row['StoreCategory']}, {row['StoreLocation']})",
+                                              style={"color": "#555"}),
+                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}",
+                                              style={"color": "#e53935", "margin-left": "10px"})
                                 ],
                                 style={"display": "flex", "align-items": "center", "margin-bottom": "5px"}
                             )
@@ -125,8 +134,10 @@ class OverviewTab:
                             html.Div(
                                 [
                                     html.Span("📍", style={"margin-right": "10px", "font-size": "20px"}),
-                                    html.Span(f"{row['StoreLocation']}", style={"font-weight": "bold", "margin-right": "10px"}),
-                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}", style={"color": "#4CAF50", "margin-left": "10px"})
+                                    html.Span(f"{row['StoreLocation']}",
+                                              style={"font-weight": "bold", "margin-right": "10px"}),
+                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}",
+                                              style={"color": "#4CAF50", "margin-left": "10px"})
                                 ],
                                 style={"display": "flex", "align-items": "center", "margin-bottom": "5px"}
                             )
@@ -155,8 +166,10 @@ class OverviewTab:
                             html.Div(
                                 [
                                     html.Span("📊", style={"margin-right": "10px", "font-size": "20px"}),
-                                    html.Span(f"{row['StoreCategory']}", style={"font-weight": "bold", "margin-right": "10px"}),
-                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}", style={"color": "#4CAF50", "margin-left": "10px"})
+                                    html.Span(f"{row['StoreCategory']}",
+                                              style={"font-weight": "bold", "margin-right": "10px"}),
+                                    html.Span(f"${row['MonthlySalesRevenue']:,.2f}",
+                                              style={"color": "#4CAF50", "margin-left": "10px"})
                                 ],
                                 style={"display": "flex", "align-items": "center", "margin-bottom": "5px"}
                             )
@@ -186,8 +199,10 @@ class OverviewTab:
                                     html.Li(
                                         html.Div(
                                             [
-                                                html.Span(metric["icon"], style={"margin-right": "10px", "font-size": "20px"}),
-                                                html.Span(metric["label"], style={"font-weight": "bold", "margin-right": "5px"}),
+                                                html.Span(metric["icon"],
+                                                          style={"margin-right": "10px", "font-size": "20px"}),
+                                                html.Span(metric["label"],
+                                                          style={"font-weight": "bold", "margin-right": "5px"}),
                                                 html.Span(metric["value"], style={"color": "#4CAF50"})
                                             ],
                                             style={

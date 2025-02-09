@@ -15,6 +15,8 @@ from views.customer_insights_tab import CustomerInsightsTab
 
 
 class Dashboard:
+    """Klasse zur Erstellung und Steuerung des Dashboards."""
+
     def __init__(self, db_path):
         self.db_connector = SQLiteConnector(db_path)
         self.vergleichsfunktion_tab = VergleichsfunktionTab(self.db_connector)
@@ -176,6 +178,7 @@ class Dashboard:
 
     def setup_callbacks(self):
         """Setup der callbacks fürs Dashboard."""
+
         @self.app.callback(
             [Output("overview-section", "children"),
              Output("feature-importance", "figure"),
@@ -204,7 +207,6 @@ class Dashboard:
              Output("recommendations-section", "children")],
             Input("feature-importance", "id")
         )
-
         def update_dashboard(_):
             """Erzeugt das Dashboard im Gesamten."""
             df = self.db_connector.fetch_data("SELECT * FROM StoreData")
@@ -248,12 +250,17 @@ class Dashboard:
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section(df)
 
-            return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig, customer_footfall_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
-                    scatter_marketing_fig, scatter_promotions_revenue_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
-                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_productvariety_revenue_efficiency_fig, bubble_chart_fig, scatter_footfall_efficiency_fig, histogram_fig, recommendations)
+            return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig,
+                    customer_footfall_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig,
+                    scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig,
+                    scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
+                    scatter_marketing_fig, scatter_promotions_revenue_fig, scatter_competitor_fig,
+                    grouped_barchart_footfall_fig, box_plot_category_fig,
+                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig,
+                    bubble_productvariety_revenue_efficiency_fig, bubble_chart_fig, scatter_footfall_efficiency_fig,
+                    histogram_fig, recommendations)
 
-        """ Navigation und View-Handling basierend auf der URL (JPG) """
-        #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)
+        # Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)
         @self.app.callback(
             [Output("comparison-output", "children"),
              Output("comparison-bar-chart", "figure"),
@@ -275,6 +282,8 @@ class Dashboard:
             pie_chart = self.vergleichsfunktion_tab.create_comparison_pie_chart(df, first, second)
 
             return comparison_metrics, bar_chart, pie_chart
+
+        """ Navigation und View-Handling basierend auf der URL (JPG) """
 
         # Callback zur Hervorhebung des aktiven Tabs in der Sidebar (JPG)
         @self.app.callback(
@@ -357,9 +366,8 @@ class Dashboard:
                 styles[0] = visible  # default zur Homepage
             return styles
 
-
         @self.app.callback(
-            Output("recommendations-section", "children",allow_duplicate=True),
+            Output("recommendations-section", "children", allow_duplicate=True),
             Input("url", "pathname"),
             prevent_initial_call=True
         )
@@ -441,7 +449,7 @@ class Dashboard:
         self.app.run_server(debug=True)
 
 
-if __name__ == "__main__": #JE
+if __name__ == "__main__":  # JE
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, "../scripts/Database.db")
 

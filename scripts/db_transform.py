@@ -1,12 +1,13 @@
 import sqlite3
 import os
 
-#JE
+
+# JE
 
 class StoreDataUpdater:
     """
     Diese Klasse kapselt die Logik, in eine bestehende SQLite-Tabelle
-    eine neue Spalte einzufügen und diese fortlaufend zu befüllen.
+    eine neue Spalte einzufügen und diese fortlaufend zu befüllen. (JE)
     """
 
     def __init__(self, db_path: str):

@@ -1,7 +1,8 @@
 import plotly.graph_objects as go
 from dash import dcc, html
 
-        #Comparison function (DM - Davronbek Mavlonov)
+
+# Comparison function (DM - Davronbek Mavlonov)
 class VergleichsfunktionTab:
     """Tab for comparing two stores or regions across multiple metrics. (DM)"""
 
@@ -23,7 +24,6 @@ class VergleichsfunktionTab:
         # Separate regions and stores
         unique_locations = df["StoreLocation"].dropna().unique()
         unique_stores = df[["StoreID", "StoreLocation", "StoreCategory"]].drop_duplicates()
-
 
         # Prepare dropdowns
         location_options = [{"label": f"Region: {loc}", "value": loc} for loc in unique_locations]
@@ -102,7 +102,8 @@ class VergleichsfunktionTab:
         ]
 
         return html.Ul(comparison_result)
-#bar chart
+
+    # bar chart
     def create_comparison_bar_chart(self, df, first, second, metrics):
         """Creates a grouped bar chart for selected metrics."""
 
@@ -136,7 +137,6 @@ class VergleichsfunktionTab:
         if not available_metrics:
             return go.Figure(layout={"title": "No valid metrics selected"})
 
-
         first_avg = first_data[available_metrics].mean(skipna=True)
         second_avg = second_data[available_metrics].mean(skipna=True)
 
@@ -152,7 +152,8 @@ class VergleichsfunktionTab:
             yaxis_title="Metric Value"
         )
         return fig
-#pie chart
+
+    # pie chart
     def create_comparison_pie_chart(self, df, first, second):
         """Creates a pie chart comparing total revenue of the two selections."""
 
@@ -195,7 +196,8 @@ class VergleichsfunktionTab:
             second_label = f"Region: {second}"
 
         # Jetzt erst die Umsatzdaten berechnen
-        revenue_first, revenue_second = first_data["MonthlySalesRevenue"].sum(), second_data["MonthlySalesRevenue"].sum()
+        revenue_first, revenue_second = first_data["MonthlySalesRevenue"].sum(), second_data[
+            "MonthlySalesRevenue"].sum()
 
         labels = [first_label, second_label]
         fig = go.Figure(data=[go.Pie(labels=labels, values=[revenue_first, revenue_second], hole=0.4)])

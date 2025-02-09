@@ -1,7 +1,9 @@
 import plotly.express as px  # Vereinfachte Schnittstelle zum Erstellen von Plotly-Visualisierung
 import plotly.graph_objects as go
 
+
 class StoreOperationsTab:
+    """ Klasse für die Visualisierungen im Tab "Store Operations" (JPG und JE) """
 
     @staticmethod
     def create_scatter_productvariety_revenue(df):
@@ -61,7 +63,7 @@ class StoreOperationsTab:
         Erzeugt einen Bubble Chart, der den Zusammenhang zwischen ProductVariety,
         MonthlySalesRevenue und EmployeeEfficiency zeigt. Zusätzlich wird für jede StoreCategory
         der Punkt markiert, an dem der kombinierte Score (MonthlySalesRevenue * EmployeeEfficiency)
-        am höchsten ist.
+        am höchsten ist. (JPG)
 
         - X-Achse: ProductVariety (Anzahl der angebotenen Produkte)
         - Y-Achse: MonthlySalesRevenue (Umsatz)

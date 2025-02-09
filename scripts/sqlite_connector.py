@@ -2,7 +2,10 @@ import sqlite3
 import pandas as pd
 import os
 
+
 class SQLiteConnector:
+    """ Klasse zum Verbinden und Abfragen von SQLite-Datenbanken (JE)"""
+
     def __init__(self, db_path):
 
         self.db_path = os.path.abspath(db_path)  # Stellt sicher, dass der Pfad absolut ist

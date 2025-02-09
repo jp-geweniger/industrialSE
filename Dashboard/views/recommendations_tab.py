@@ -1,7 +1,7 @@
 from dash import dcc, html, Input, Output, dash
 
-class RecommendationsTab:
 
+class RecommendationsTab:
     @staticmethod
     def create_recommendations_section(df, selected_store=None):
         """Erstellt das Layout für den Recommendations-Tab. (JE und JPG)"""
@@ -78,7 +78,8 @@ class RecommendationsTab:
                 clearable=False,
                 style={"marginBottom": "30px"}
             ),
-            html.Div(id="recommendations-content", children=RecommendationsTab.generate_recommendations(df, selected_store))
+            html.Div(id="recommendations-content",
+                     children=RecommendationsTab.generate_recommendations(df, selected_store))
         ])
 
     @staticmethod
