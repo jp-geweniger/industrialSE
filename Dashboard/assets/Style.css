@@ -1,82 +1,75 @@
-/* ============ Grundlayout ============ */
+/* Allgemeine Dashboard-Stile */
 body {
-    background-color: #f8f9fa; /* Heller Hintergrund */
     font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
 }
 
-.container {
-    max-width: 95%;
-}
-
-/* ============ Sidebar Styling ============ */
-.sidebar {
-    background-color: #343a40; /* Dunkler Hintergrund */
-    min-height: 100vh;
-    padding: 15px;
-    color: white;
-}
-
-.sidebar a, .sidebar button {
-    color: #000000 !important; /* Schriftfarbe weiß */
-    font-weight: bold;
+/* Sidebar-Styling */
+#sidebar {
+    width: 200px;
+    background-color: #f8f9fa;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
     padding: 10px;
-    display: block;
-    text-decoration: none;
-    transition: background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.sidebar a:hover, .sidebar button:hover {
-    background-color: #495057; /* Dunklerer Hover-Effekt */
-    border-radius: 5px;
+#sidebar button {
+    width: 100%;
+    height: 60px;
+    font-size: 18px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    background-color: #f0f0f0;
+    font-weight: normal;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-/* ============ Navigation Buttons ============ */
-.nav-link {
-    color: white !important;
-    font-size: 16px;
-}
-
-.nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-}
-
-/* ============ Header Styling ============ */
-h1 {
-    background: linear-gradient(90deg, #343a40, #6c757d);
+#sidebar button:hover {
+    background-color: #007bff;
     color: white;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-/* ============ Karten Styling ============ */
-.card {
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-}
-
-.card-header {
-    background-color: #6c757d !important;
-    color: white !important;
     font-weight: bold;
 }
 
-/* ============ Tabelle Styling ============ */
-.ag-theme-alpine {
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+/* Navbar Toggle Button */
+#toggle-navbar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    background-color: #e0e0e0;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ============ Buttons & Inputs ============ */
-button, .btn {
-    background-color: #414249 !important;
+/* Content Styling */
+#page-content {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+/* Aktiver Button-Stil */
+.active-button {
+    background-color: #007bff !important;
     color: white !important;
-    border-radius: 5px;
+    font-weight: bold !important;
 }
-
-button:hover, .btn:hover {
-    background-color: #0056b3 !important;
-}
-

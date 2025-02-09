@@ -83,7 +83,21 @@ class KeyInfluencersTab:
 
     @staticmethod
     def create_correlation_heatmap(df):
-        """Erzeugt Korrelations-Heatmap (JE)"""
+        """Erzeugt eine optimierte Korrelations-Heatmap."""
         numeric_df = df.select_dtypes(include=["number"])
         correlation_matrix = numeric_df.corr()
-        return px.imshow(correlation_matrix, text_auto=True, title="Correlation Heatmap")
+
+        fig = px.imshow(
+            correlation_matrix,
+            text_auto=".2f",
+            title="Correlation Heatmap",
+            color_continuous_scale=px.colors.diverging.RdBu_r,  # Besserer Kontrast
+        )
+
+        fig.update_layout(
+            height=800,  # Größer gemacht
+            width=1000,  # Breiter gemacht
+            coloraxis_colorbar=dict(title="Korrelationswert"),
+        )
+
+        return fig

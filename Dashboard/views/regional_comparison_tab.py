@@ -237,92 +237,61 @@ class RegionalComparisonTab:
 
         return base_lat + lat_offset, base_lon + lon_offset
 
+
+    # 🔹 Einheitliche Farben für jede StoreCategory
+    category_colors = {
+        "Electronic": "#1f77b4",  # Blau
+        "Grocery": "#2ca02c",     # Grün
+        "Clothing": "#d62728"     # Rot
+    }
+
     @staticmethod
     def create_grouped_bar_chart(df):
-        """
-        Erzeugt ein gruppiertes Balkendiagramm, das den durchschnittlichen MonthlySalesRevenue
-        für jede StoreLocation (Stadt) und StoreCategory darstellt. (JPG)
-
-        - X-Achse: StoreLocation (Städte)
-        - Y-Achse: Durchschnittlicher MonthlySalesRevenue
-        - Farbkodierung: StoreCategory (z. B. Grocery, Electronics, Clothing)
-
-        Für jede Kategorie wird ein Balken pro Stadt angezeigt.
-        """
-        # Gruppiere den DataFrame nach StoreLocation und StoreCategory
-        # und berechne den Durchschnitt des MonthlySalesRevenue
+        """Erzeugt ein gruppiertes Balkendiagramm für Umsatz nach Stadt und Kategorie."""
         df_grouped = df.groupby(["StoreLocation", "StoreCategory"], as_index=False)["MonthlySalesRevenue"].mean()
 
-        # Erstelle das gruppierte Balkendiagramm:
-        # - barmode="group" sorgt dafür, dass die Balken für verschiedene Kategorien nebeneinander stehen.
         fig = px.bar(
             df_grouped,
             x="StoreLocation",
             y="MonthlySalesRevenue",
             color="StoreCategory",
+            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
             barmode="group",
             title="Average Monthly Sales Revenue by Store Location and Category",
-            labels={
-                "StoreLocation": "Store Location (Stadt)",
-                "MonthlySalesRevenue": "Durchschnittlicher Monthly Sales Revenue",
-                "StoreCategory": "Store Category"
-            },
+            labels={"StoreLocation": "Store Location", "MonthlySalesRevenue": "Avg. Monthly Sales Revenue"},
             hover_data=["MonthlySalesRevenue"]
         )
         return fig
 
     @staticmethod
     def create_scatter_competitor_revenue(df):
-        """
-        Erstellt ein Scatter Plot, das den Zusammenhang zwischen CompetitorDistance und MonthlySalesRevenue zeigt.
-        Dabei werden die Stores anhand ihrer StoreLocation farblich unterschieden.
-        Zusätzlich wird eine Trendlinie mittels linearer Regression (OLS) hinzugefügt, die den generellen Trend
-        der Beziehung zwischen den beiden Variablen verdeutlicht.
-
-        Die Funktionsweise der trendline wurde bereits in Beispielen anderer Tabs dieses Projekts dokumentiert (JPG und JE)
-        """
+        """Erzeugt ein Scatter-Plot für Competitor Distance vs. Revenue mit festen Farben."""
         fig = px.scatter(
             df,
             x="CompetitorDistance",
             y="MonthlySalesRevenue",
-            color="StoreCategory",  # Farbcodierung nach StoreCategory, um branchenspezifische Unterschiede zu erkennen
-            trendline="ols",  # Trendlinie als lineare Regression (OLS)
+            color="StoreCategory",
+            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
+            trendline="ols",
             title="Competitor Distance vs. Revenue",
-            labels={
-                "CompetitorDistance": "Competitor Distance",
-                "MonthlySalesRevenue": "Monthly Sales Revenue"
-            }
+            labels={"CompetitorDistance": "Competitor Distance", "MonthlySalesRevenue": "Monthly Sales Revenue"}
         )
         return fig
 
     @staticmethod
     def create_grouped_barchart_footfall(df):
-        """
-        Erzeugt ein gruppiertes Balkendiagramm, das den durchschnittlichen CustomerFootfall
-        für jede StoreLocation (Stadt) und StoreCategory darstellt. (JPG)
-
-        - X-Achse: StoreLocation (Städte)
-        - Y-Achse: Durchschnittlicher CustomerFootfall
-        - Farbcodierung: StoreCategory
-
-        Für jede Kategorie wird ein separater Balken pro Stadt angezeigt.
-        """
-        # Gruppiere den DataFrame nach StoreLocation und StoreCategory und berechne den Durchschnitt von CustomerFootfall
+        """Erzeugt ein gruppiertes Balkendiagramm für Kundenfrequenz nach Stadt und Kategorie."""
         df_grouped = df.groupby(["StoreLocation", "StoreCategory"], as_index=False)["CustomerFootfall"].mean()
 
-        # Erstelle das gruppierte Balkendiagramm:
         fig = px.bar(
             df_grouped,
             x="StoreLocation",
             y="CustomerFootfall",
             color="StoreCategory",
-            barmode="group",  # Balken werden für jede Kategorie nebeneinander dargestellt
+            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
+            barmode="group",
             title="Average Customer Footfall by Store Location and Category",
-            labels={
-                "StoreLocation": "Store Location (Stadt)",
-                "CustomerFootfall": "Durchschnittlicher Customer Footfall",
-                "StoreCategory": "Store Category"
-            },
+            labels={"StoreLocation": "Store Location", "CustomerFootfall": "Avg. Customer Footfall"},
             hover_data=["CustomerFootfall"]
         )
         return fig

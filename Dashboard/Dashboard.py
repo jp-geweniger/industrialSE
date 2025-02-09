@@ -16,7 +16,7 @@ class Dashboard:
     def __init__(self, db_path):
         self.db_connector = SQLiteConnector(db_path)
         self.vergleichsfunktion_tab = VergleichsfunktionTab(self.db_connector)
-        self.app = dash.Dash(__name__)
+        self.app = dash.Dash(__name__, suppress_callback_exceptions=True)
         self.setup_layout()
         self.setup_callbacks()
 
@@ -201,7 +201,7 @@ class Dashboard:
             overview = OverviewTab.create_overview_section(df)
 
             # Funktionen/Diagramme des KeyInfluencers-Tabs
-            feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure()
+            feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure(df)
             heatmap_fig = KeyInfluencersTab.create_correlation_heatmap(df)
 
             # Funktionen/Diagramme des PerformanceInsights-Tabs
@@ -229,7 +229,7 @@ class Dashboard:
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
             # Funktionen/Diagramme des Recommendations-Tabs
-            recommendations = RecommendationsTab.create_recommendations_section()
+            recommendations = RecommendationsTab.create_recommendations_section(df)
 
             return (overview, feature_importance_fig, heatmap_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
@@ -340,6 +340,22 @@ class Dashboard:
                 styles[0] = visible  # default zur Homepage
             return styles
 
+
+        @self.app.callback(
+            Output("recommendations-section", "children",allow_duplicate=True),
+            Input("url", "pathname"),
+            prevent_initial_call=True
+        )
+        def update_recommendations(pathname):
+            if pathname != "/recommendations":
+                raise dash.exceptions.PreventUpdate  # Kein Update außerhalb des Tabs
+
+            df = self.db_connector.fetch_data("SELECT * FROM StoreData")
+            if df.empty:
+                return html.P("🚫 Keine Daten verfügbar.")
+
+            return RecommendationsTab.create_recommendations_section(df)
+
         # Callback zum Togglen der Sidebar mit dem Button (JPG)
         @self.app.callback(
             Output("sidebar", "style"),
@@ -400,6 +416,8 @@ class Dashboard:
             elif button_id == "btn-recommendations":
                 return "/recommendations"
             return "/overview"
+
+        RecommendationsTab.register_callbacks(self.app, self.db_connector)
 
     def run(self):
         """Startet den Dash-Server."""

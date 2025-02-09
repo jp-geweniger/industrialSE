@@ -56,8 +56,7 @@
 #### **6. Recommendations Section**
 - **Goal:** Provide actionable insights.  
 - **Content:**  
-  - Highlight top three actionable factors driving revenue improvement.  
-  - Present predictive insights from the model.
+  - Shows performance of Store in comparison to average of all the others store
 
 ---
 
