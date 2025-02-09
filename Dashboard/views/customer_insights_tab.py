@@ -27,7 +27,7 @@ class CustomerInsightsTab:
             df_grouped,
             x="StoreCategory",
             y="CustomerFootfall",
-            title="Average Customer Footfall pro Kategorie",
+            title="Average Customer Footfall per Category",
             labels={
                 "StoreCategory": "Store Category",
                 "CustomerFootfall": "Average Customer Footfall"
@@ -169,10 +169,10 @@ class CustomerInsightsTab:
             df_grouped,
             x="PromotionsCount",
             y="CustomerFootfall",
-            title="Durchschnittliche Kundenfrequenz pro Promotionsanzahl",
+            title="Average Customer Footfall pro Promotionsanzahl",
             labels={
-                "PromotionsCount": "Promotionsanzahl",
-                "CustomerFootfall": "Durchschnittliche Kundenfrequenz"
+                "PromotionsCount": "Promotion Count",
+                "CustomerFootfall": "Average Customer Footfall"
             }
         )
         return fig

@@ -48,8 +48,8 @@ class StoreOperationsTab:
             trendline="ols",  # Fügt eine lineare Regressions-Trendlinie hinzu
             title="Product Variety vs Employee Efficiency",
             labels={
-                "ProductVariety": "Product Variety (Anzahl der verschiedenen Produkte)",
-                "EmployeeEfficiency": "Employee Efficiency (Skala 0–100)"
+                "ProductVariety": "Product Variety",
+                "EmployeeEfficiency": "Employee Efficiency"
             },
             hover_data=["StoreID"]
         )
@@ -80,9 +80,9 @@ class StoreOperationsTab:
             color="StoreCategory",
             title="Product Variety vs Revenue vs Employee Efficiency (Best Points per Category)",
             labels={
-                "ProductVariety": "Product Variety (Anzahl der Produkte)",
-                "MonthlySalesRevenue": "Monthly Sales Revenue (Umsatz)",
-                "EmployeeEfficiency": "Employee Efficiency (Effizienz)"
+                "ProductVariety": "Product Variety",
+                "MonthlySalesRevenue": "Monthly Sales Revenue",
+                "EmployeeEfficiency": "Employee Efficiency"
             },
             hover_data=["StoreID", "EmployeeEfficiency", "StoreCategory"]
         )
@@ -207,8 +207,8 @@ class StoreOperationsTab:
             trendline="ols",  # Trendlinie als lineare Regression (OLS)
             title="Customer Footfall vs Employee Efficiency",
             labels={
-                "CustomerFootfall": "Customer Footfall (Kundenbesuche)",
-                "EmployeeEfficiency": "Employee Efficiency (Effizienz)"
+                "CustomerFootfall": "Customer Footfall",
+                "EmployeeEfficiency": "Employee Efficiency"
             },
             hover_data=["StoreID"]
         )

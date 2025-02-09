@@ -6,7 +6,7 @@ class RecommendationsTab:
     def create_recommendations_section(df, selected_store=None):
         """Erstellt das Layout für den Recommendations-Tab. (JE und JPG)"""
         if df is None or df.empty:
-            return html.P("🚫 Keine Daten verfügbar.")
+            return html.P("🚫 No Data Available.")
 
         # Store-Optionen für Dropdown erstellen
         store_options = [{"label": f"Store {store}", "value": store} for store in df["StoreID"].unique()]
@@ -96,7 +96,7 @@ class RecommendationsTab:
 
             df = db_connector.fetch_data("SELECT * FROM StoreData")
             if df.empty:
-                return html.P("🚫 Keine Daten verfügbar.")
+                return html.P("🚫 No Data Available.")
 
             return RecommendationsTab.generate_recommendations(df, selected_store)
 
@@ -104,11 +104,11 @@ class RecommendationsTab:
     def generate_recommendations(df, selected_store):
         """Erstellt die Empfehlungen basierend auf dem ausgewählten Store. (JE)"""
         if df is None or df.empty:
-            return html.P("🚫 Keine Daten verfügbar.")
+            return html.P("🚫 No Data Available.")
 
         # Prüfe, ob der Store existiert
         if selected_store not in df["StoreID"].values:
-            return html.P("🚫 Der ausgewählte Store existiert nicht in den Daten.")
+            return html.P("🚫 The selected store does not exist")
 
         # Daten des ausgewählten Stores abrufen
         store_data = df.loc[df["StoreID"] == selected_store]
@@ -128,19 +128,19 @@ class RecommendationsTab:
                     recommendations.append(html.P(message))
 
         # 🔥 Umsatzsteigerung
-        add_recommendation("MonthlySalesRevenue", 1, "📊 Erhöhe das Marketingbudget, um den Umsatz zu steigern.")
+        add_recommendation("MonthlySalesRevenue", 1, "📊 Increase the marketing budget to increase revenue.")
 
         # 🔥 Kundenfrequenz verbessern
-        add_recommendation("CustomerFootfall", 1, "👥 Plane mehr Promotion-Events, um mehr Kunden anzulocken.")
+        add_recommendation("CustomerFootfall", 1, "👥 Plan more promotions to increase customer footfall.")
 
         # 🔥 Werbeaktionen optimieren
-        add_recommendation("PromotionsCount", 1, "🎯 Nutze gezieltere Werbeaktionen zur Steigerung der Kundenfrequenz.")
+        add_recommendation("PromotionsCount", 1, "🎯 Use targeted marketing to increase customer footfall.")
 
         # 🔥 Mitarbeiterschulung verbessern
-        add_recommendation("EmployeeEfficiency", 1, "📚 Optimiere die Mitarbeiterschulung, um die Effizienz zu erhöhen.")
+        add_recommendation("EmployeeEfficiency", 1, "📚 Optimize employee training to increase efficiency.")
 
         # Falls keine spezifischen Empfehlungen notwendig sind
         if not recommendations:
-            recommendations.append(html.P("✅ Der Store ist in allen Bereichen überdurchschnittlich!"))
+            recommendations.append(html.P("✅ The store is above average in all areas!"))
 
         return html.Div(recommendations)

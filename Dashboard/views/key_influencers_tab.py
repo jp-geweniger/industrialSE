@@ -73,8 +73,8 @@ class KeyInfluencersTab:
             df_importance,
             x="Feature",
             y="Influence",
-            title="Feature Importance – Einflussfaktoren auf den Umsatz",
-            labels={"Feature": "Faktor", "Influence": "Einfluss (%)"},
+            title="Feature Importance – Factors Influencing Revenue",
+            labels={"Feature": "Faktor", "Influence": "Influence (%)"},
             text="Influence"
         )
         fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
@@ -145,8 +145,8 @@ class KeyInfluencersTab:
             df_importance,
             x="Feature",
             y="Influence",
-            title="Feature Importance – Einflussfaktoren auf die Employee Efficiency",
-            labels={"Feature": "Faktor", "Influence": "Einfluss (%)"},
+            title="Feature Importance – Factors Influencing Employee Efficiency",
+            labels={"Feature": "Faktor", "Influence": "Influence (%)"},
             text="Influence"
         )
         fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
@@ -206,7 +206,7 @@ class KeyInfluencersTab:
             df_importance,
             x="Feature",
             y="Influence",
-            title="Feature Importance – Einflussfaktoren auf den Customer Footfall",
+            title="Feature Importance – Factors Influencing Customer Footfall",
             labels={"Feature": "Faktor", "Influence": "Einfluss (%)"},
             text="Influence"
         )
