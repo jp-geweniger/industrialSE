@@ -113,38 +113,38 @@ class KeyInfluencersTab:
 
         Funktionsweise wie im oberen Beispiel (JPG)
         """
-        # Definiere die unabhängigen Variablen (Features) und das Ziel (Target)
+        # Definiert die unabhängigen Variablen (Features) und das Ziel (Target)
         features = ["CustomerFootfall", "ProductVariety", "StoreSize", "StoreAge"]
         target = "EmployeeEfficiency"
 
-        # Entferne Zeilen mit fehlenden Werten in den relevanten Spalten
+        # Entfernt Zeilen mit fehlenden Werten in den relevanten Spalten
         df_model = df.dropna(subset=features + [target])
 
-        # Standardisiere die Features, damit die Koeffizienten vergleichbar sind
+        # Standardisiert die Features, damit die Koeffizienten vergleichbar sind
         scaler = StandardScaler()
         x = scaler.fit_transform(df_model[features])
         y = df_model[target].values
 
-        # Trainiere das lineare Regressionsmodell
+        # Trainiert das lineare Regressionsmodell
         model = LinearRegression()
         model.fit(x, y)
 
-        # Extrahiere die Koeffizienten und berechne deren absolute Werte
+        # Extrahiert die Koeffizienten und berechnet deren absolute Werte
         coefs = model.coef_
         importances = np.abs(coefs)
 
-        # Normalisiere die Importances, sodass ihre Summe 100% ergibt
+        # Normalisiert die Importances, sodass ihre Summe 100% ergibt
         total = importances.sum()
         percentages = 100 * importances / total if total > 0 else importances
 
-        # Erstelle einen DataFrame für die Visualisierung
+        # Erstellt einen DataFrame für die Visualisierung
         data = {
             "Feature": features,
             "Influence": percentages
         }
         df_importance = pd.DataFrame(data)
 
-        # Erstelle das Balkendiagramm (Bar Chart) mit plotly.express
+        # Erstellt das Balkendiagramm (Bar Chart) mit plotly.express
         fig = px.bar(
             df_importance,
             x="Feature",
@@ -179,34 +179,34 @@ class KeyInfluencersTab:
                     "CompetitorDistance", "EconomicIndicator"]
         target = "CustomerFootfall"
 
-        # Entferne Zeilen mit fehlenden Werten in den relevanten Spalten
+        # Entfernt Zeilen mit fehlenden Werten in den relevanten Spalten
         df_model = df.dropna(subset=features + [target])
 
-        # Standardisiere die Features, um vergleichbare Koeffizienten zu erhalten
+        # Standardisiert die Features, um vergleichbare Koeffizienten zu erhalten
         scaler = StandardScaler()
         x = scaler.fit_transform(df_model[features])
         y = df_model[target].values
 
-        # Trainiere das lineare Regressionsmodell
+        # Trainiert das lineare Regressionsmodell
         model = LinearRegression()
         model.fit(x, y)
 
-        # Extrahiere die Koeffizienten und berechne deren absolute Werte
+        # Extrahiert die Koeffizienten und berechnet deren absolute Werte
         coefs = model.coef_
         importances = np.abs(coefs)
 
-        # Normalisiere die Importances, sodass ihre Summe 100% ergibt
+        # Normalisiert die Importances, sodass ihre Summe 100% ergibt
         total = importances.sum()
         percentages = 100 * importances / total if total > 0 else importances
 
-        # Erstelle einen DataFrame für die Visualisierung
+        # Erstellt einen DataFrame für die Visualisierung
         data = {
             "Feature": features,
             "Influence": percentages
         }
         df_importance = pd.DataFrame(data)
 
-        # Erstelle das Balkendiagramm
+        # Erstellt das Balkendiagramm
         fig = px.bar(
             df_importance,
             x="Feature",
