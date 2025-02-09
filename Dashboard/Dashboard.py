@@ -71,7 +71,7 @@ class Dashboard:
                 html.Button([
                     html.Span(html.I(className="fas fa-balance-scale", style={"color": "#6f42c1"}),
                               style={"width": "30px"}),
-                    html.Span("Vergleichsfunktion", style={"flex": "1", "textAlign": "left"})
+                    html.Span("Comparison-Feature", style={"flex": "1", "textAlign": "left"})
                 ], id="btn-vergleichsfunktion", n_clicks=0, style={"width": "100%"}),
 
                 html.Button([
