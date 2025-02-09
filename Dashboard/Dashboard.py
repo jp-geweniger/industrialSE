@@ -122,8 +122,8 @@ class Dashboard:
                 html.Div([
                     html.H2("Key Influencers"),
                     dcc.Graph(id="feature-importance"),
+                    dcc.Graph(id="employee-efficiency-importance"),
                     dcc.Graph(id="correlation-heatmap"),
-                    dcc.Graph(id="employee-efficiency-importance")
                 ], id="page-key-influencers", style={"display": "none"}),
 
                 html.Div(self.vergleichsfunktion_tab.create_comparison_section(), id="page-vergleichsfunktion",
@@ -157,6 +157,7 @@ class Dashboard:
                     html.H2("Store Operations"),
                     dcc.Graph(id="scatter-productvariety-revenue"),
                     dcc.Graph(id="scatter-productvariety-efficiency"),
+                    dcc.Graph(id="scatter-footfall-efficiency"),
                     dcc.Graph(id="bubble-chart-operations"),
                     dcc.Graph(id="histogram-efficiency"),
                 ], id="page-store-operations", style={"display": "none"}),
@@ -191,6 +192,7 @@ class Dashboard:
              Output("scatter-productvariety-efficiency", "figure"),
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
+             Output("scatter-footfall-efficiency", "figure"),
              Output("recommendations-section", "children")],
             Input("feature-importance", "id")
         )
@@ -230,13 +232,14 @@ class Dashboard:
             scatter_productvariety_efficiency_fig = StoreOperationsTab.create_scatter_productvariety_efficiency(df)
             bubble_chart_fig = StoreOperationsTab.create_bubble_chart_operations(df)
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
+            scatter_footfall_efficiency_fig = StoreOperationsTab.create_scatter_customerfootfall_efficiency(df)
 
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section(df)
 
             return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
-                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
+                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, scatter_footfall_efficiency_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
         #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)

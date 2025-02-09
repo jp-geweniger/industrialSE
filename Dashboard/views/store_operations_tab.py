@@ -74,3 +74,29 @@ class StoreOperationsTab:
             hover_data=["StoreID"]
         )
         return fig
+
+    @staticmethod
+    def create_scatter_customerfootfall_efficiency(df):
+        """
+        Erzeugt ein Streudiagramm mit Trendlinie, das den Zusammenhang zwischen CustomerFootfall
+        (Anzahl der Kundenbesuche) und EmployeeEfficiency (Mitarbeitereffizienz) untersucht. (JPG)
+
+        - X-Achse: CustomerFootfall (Anzahl der Kundenbesuche)
+        - Y-Achse: EmployeeEfficiency (Effizienz der Mitarbeiter, z. B. auf einer Skala von 0–100)
+        - Farb-Codierung: StoreCategory (zeigt branchenspezifische Unterschiede)
+        - Trendlinie: Fügt eine lineare Regression (OLS) hinzu, die den generellen Trend in der Beziehung veranschaulicht.
+        """
+        fig = px.scatter(
+            df,
+            x="CustomerFootfall",
+            y="EmployeeEfficiency",
+            color="StoreCategory",  # Unterscheidung der Datenpunkte nach StoreCategory
+            trendline="ols",  # Trendlinie als lineare Regression (OLS)
+            title="Customer Footfall vs Employee Efficiency",
+            labels={
+                "CustomerFootfall": "Customer Footfall (Kundenbesuche)",
+                "EmployeeEfficiency": "Employee Efficiency (Effizienz)"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
