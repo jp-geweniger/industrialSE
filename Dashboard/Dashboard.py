@@ -1,5 +1,7 @@
 import dash  # Framework zum Erstellen von Webanwendungen
 from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
+import plotly.graph_objects as go
+from views.vergleichsfunktion_tab import VergleichsfunktionTab
 from scripts.sqlite_connector import SQLiteConnector
 from views.overview_tab import OverviewTab
 from views.key_influencers_tab import KeyInfluencersTab
@@ -13,6 +15,7 @@ from views.customer_insights_tab import CustomerInsightsTab
 class Dashboard:
     def __init__(self, db_path):
         self.db_connector = SQLiteConnector(db_path)
+        self.vergleichsfunktion_tab = VergleichsfunktionTab(self.db_connector)
         self.app = dash.Dash(__name__)
         self.setup_layout()
         self.setup_callbacks()
@@ -122,9 +125,8 @@ class Dashboard:
                     dcc.Graph(id="correlation-heatmap")
                 ], id="page-key-influencers", style={"display": "none"}),
 
-                html.Div([
-                    html.H2("Vergleichsfunktion")
-                ], id="page-vergleichsfunktion", style={"display": "none"}),
+                html.Div(self.vergleichsfunktion_tab.create_comparison_section(), id="page-vergleichsfunktion",
+                         style={"display": "none"}),
 
                 html.Div([
                     html.H2("Performance Insights"),
@@ -134,8 +136,10 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Customer Insights"),
+                    dcc.Graph(id="barchart_category_footfall"),
                     dcc.Graph(id="scatter-footfall-revenue"),
                     dcc.Graph(id="scatter-productvariety-footfall"),
+                    dcc.Graph(id="scatter-marketing-footfall"),
                     dcc.Graph(id="scatter-promotions-footfall"),
                     dcc.Graph(id="barchart-promotions-footfall"),
                 ], id="page-customer-insights", style={"display": "none"}),
@@ -145,6 +149,7 @@ class Dashboard:
                     dcc.Graph(id="map-visualization"),
                     dcc.Graph(id="grouped-bar-chart"),
                     dcc.Graph(id="scatter-competitor-revenue"),
+                    dcc.Graph(id="grouped-bar-chart-footfall"),
                 ], id="page-regional-comparison", style={"display": "none"}),
 
                 html.Div([
@@ -157,10 +162,8 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Recommendations"),
-                    dcc.Dropdown(id="store-dropdown", options=[], placeholder="Store auswählen...", value=None),
-                    # Hier vorinitialisiert
                     html.Div(id="recommendations-section")
-                ], id="page-recommendations", style={"display": "none"})
+                ], id="page-recommendations", style={"display": "none"}),
             ], id="page-content", style={"margin-left": "220px", "padding": "20px"})
         ])
 
@@ -170,12 +173,15 @@ class Dashboard:
             [Output("overview-section", "children"),
              Output("feature-importance", "figure"),
              Output("correlation-heatmap", "figure"),
+             Output("barchart_category_footfall", "figure"),
              Output("scatter-footfall-revenue", "figure"),
              Output("scatter-productvariety-footfall", "figure"),
+             Output("scatter-marketing-footfall", "figure"),
              Output("scatter-promotions-footfall", "figure"),
              Output("barchart-promotions-footfall", "figure"),
              Output("scatter-marketing-revenue", "figure"),
              Output("scatter-competitor-revenue", "figure"),
+             Output("grouped-bar-chart-footfall", "figure"),
              Output("box-plot-category", "figure"),
              Output("map-visualization", "figure"),
              Output("grouped-bar-chart", "figure"),
@@ -184,9 +190,10 @@ class Dashboard:
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
              Output("recommendations-section", "children")],
-            [Input("store-dropdown", "value")]# Dummy input to trigger callback
+            Input("feature-importance", "id")  # Dummy trigger
         )
-        def update_dashboard(selected_store):
+
+        def update_dashboard(_):
             """Erzeugt das Dashboard im Gesamten."""
             df = self.db_connector.fetch_data("SELECT * FROM StoreData")
 
@@ -202,8 +209,10 @@ class Dashboard:
             box_plot_category_fig = PerformanceInsightsTab.create_box_plot_category(df)
 
             # Funktionen/Diagramme des CustomerInsights-Tabs
+            barchart_category_footfall_fig = CustomerInsightsTab.create_barchart_category_footfall(df)
             scatter_footfall_fig = CustomerInsightsTab.create_scatter_footfall_revenue(df)
             scatter_productvariety_footfall_fig = CustomerInsightsTab.create_scatter_productvariety_vs_footfall(df)
+            scatter_marketing_footfall_fig = CustomerInsightsTab.create_scatter_marketing_footfall(df)
             scatter_promotions_footfall_fig = CustomerInsightsTab.create_scatter_promotions_footfall(df)
             barchart_promotions_footfall_fig = CustomerInsightsTab.create_bar_chart_promotions_vs_footfall(df)
 
@@ -211,6 +220,7 @@ class Dashboard:
             map_fig = RegionalComparisonTab.create_map_visualization(df)
             grouped_bar_fig = RegionalComparisonTab.create_grouped_bar_chart(df)
             scatter_competitor_fig = RegionalComparisonTab.create_scatter_competitor_revenue(df)
+            grouped_barchart_footfall_fig = RegionalComparisonTab.create_grouped_barchart_footfall(df)
 
             # Funktionen/Diagramme des StoreOperations-Tabs
             scatter_productvariety_revenue_fig = StoreOperationsTab.create_scatter_productvariety_revenue(df)
@@ -219,13 +229,35 @@ class Dashboard:
             histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
             # Funktionen/Diagramme des Recommendations-Tabs
-            recommendations = RecommendationsTab.create_recommendations_section(df, selected_store)
+            recommendations = RecommendationsTab.create_recommendations_section()
 
-            return (overview, feature_importance_fig, heatmap_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
-                    scatter_marketing_fig, scatter_competitor_fig, box_plot_category_fig,
+            return (overview, feature_importance_fig, heatmap_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
+                    scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
+        #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)
+        @self.app.callback(
+            [Output("comparison-output", "children"),
+             Output("comparison-bar-chart", "figure"),
+             Output("comparison-pie-chart", "figure")],
+            Input("compare-button", "n_clicks"),
+            [State("compare-first", "value"),
+             State("compare-second", "value"),
+             State("compare-metrics", "value")]
+        )
+        def update_comparison(n_clicks, first, second, metrics):
+            """Erzeugt Vergleichsmetriken und Diagramme...(DM)"""
+            if not first or not second or not metrics:
+                return "Please select two stores/regions and at least one metric.", go.Figure(), go.Figure()
+
+            df = self.db_connector.fetch_data("SELECT * FROM StoreData")
+
+            comparison_metrics = self.vergleichsfunktion_tab.generate_comparison_metrics(df, first, second, metrics)
+            bar_chart = self.vergleichsfunktion_tab.create_comparison_bar_chart(df, first, second, metrics)
+            pie_chart = self.vergleichsfunktion_tab.create_comparison_pie_chart(df, first, second)
+
+            return comparison_metrics, bar_chart, pie_chart
 
         # Callback zur Hervorhebung des aktiven Tabs in der Sidebar (JPG)
         @self.app.callback(
@@ -282,7 +314,6 @@ class Dashboard:
             Output("page-store-operations", "style"),
             Output("page-recommendations", "style"),
             Input("url", "pathname")
-
         )
         def display_page(pathname):
             hidden = {"display": "none"}
