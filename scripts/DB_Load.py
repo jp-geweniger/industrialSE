@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import os
 
-# 🔹 Datenbank- und CSV-Dateipfade
+# Datenbank- und CSV-Dateipfade
 DB_PATH = "Database.db"
 CSV_PATH = "../data/Store_CA Überarbeitet.csv"  # Falls CSV woanders liegt, hier anpassen
 
@@ -12,9 +12,9 @@ def create_database():
     if not os.path.exists(DB_PATH):
         connection = sqlite3.connect(DB_PATH)
         connection.close()
-        print(f"✅ Datenbank '{DB_PATH}' wurde erstellt.")
+        print(f" Datenbank '{DB_PATH}' wurde erstellt.")
     else:
-        print(f"✔️ Datenbank '{DB_PATH}' existiert bereits.")
+        print(f" Datenbank '{DB_PATH}' existiert bereits.")
 
 
 def create_table():
@@ -42,23 +42,23 @@ def create_table():
 
     connection.commit()
     connection.close()
-    print("✅ Tabelle 'StoreData' wurde überprüft/erstellt.")
+    print(" Tabelle 'StoreData' wurde überprüft/erstellt.")
 
 
 def insert_data_from_csv():
-    """Lädt Daten aus einer CSV-Datei in die SQLite-Datenbank."""
+    """Lädt Daten aus der CSV-Datei in die SQLite-Datenbank."""
     if not os.path.exists(CSV_PATH):
-        print(f"❌ Fehler: Die CSV-Datei '{CSV_PATH}' wurde nicht gefunden.")
+        print(f" Fehler: Die CSV-Datei '{CSV_PATH}' wurde nicht gefunden.")
         return
 
-    # 🔹 CSV-Datei einlesen
+    #  CSV-Datei einlesen
     df = pd.read_csv(CSV_PATH, delimiter=";", encoding="utf-8")
 
-    # 🔹 Verbindung zur Datenbank
+    #  Verbindung zur Datenbank
     connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
 
-    # 🔹 Prüfen, ob die Tabelle Daten enthält
+    #  Prüfen ob die Tabelle Daten enthält
     cursor.execute("SELECT COUNT(*) FROM StoreData")
     count = cursor.fetchone()[0]
 
@@ -91,10 +91,10 @@ def insert_data_from_csv():
 
     connection.commit()
     connection.close()
-    print(f"✅ Daten aus 'data/Store_CA Überarbeitet.csv' erfolgreich in 'StoreData' gespeichert.")
+    print(f" Daten aus 'data/Store_CA Überarbeitet.csv' erfolgreich in 'StoreData' gespeichert.")
 
 
-# 🔹 Skript ausführen
+#  Skript ausführen
 if __name__ == "__main__":
     create_database()  # Erstellt die Datenbank
     create_table()  # Erstellt die Tabelle

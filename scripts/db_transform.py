@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+#JE
 
 class StoreDataUpdater:
     """
@@ -24,7 +25,7 @@ class StoreDataUpdater:
         table_exists = self.cursor.fetchone()
 
         if not table_exists:
-            print(f"⚠️ Tabelle '{table_name}' existiert nicht. Sie wird nun erstellt...")
+            print(f" Tabelle '{table_name}' existiert nicht. Sie wird nun erstellt...")
             self.cursor.execute(f"""
                 CREATE TABLE {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +33,7 @@ class StoreDataUpdater:
                 )
             """)
             self.conn.commit()
-            print(f"✅ Tabelle '{table_name}' erfolgreich erstellt!")
+            print(f" Tabelle '{table_name}' erfolgreich erstellt!")
 
     def column_exists(self, table_name: str, column_name: str) -> bool:
         """Prüft, ob eine Spalte in der Tabelle existiert."""
@@ -44,22 +45,22 @@ class StoreDataUpdater:
     def add_column(self, table_name: str, column_name: str, column_type: str = "INTEGER"):
         """Fügt eine neue Spalte zur Tabelle hinzu, falls sie nicht existiert."""
         if self.column_exists(table_name, column_name):
-            print(f"ℹ️ Spalte '{column_name}' existiert bereits in Tabelle '{table_name}'.")
+            print(f" Spalte '{column_name}' existiert bereits in Tabelle '{table_name}'.")
             return
 
         try:
             alter_statement = f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"
             self.cursor.execute(alter_statement)
             self.conn.commit()
-            print(f"✅ Spalte '{column_name}' wurde erfolgreich hinzugefügt.")
+            print(f" Spalte '{column_name}' wurde erfolgreich hinzugefügt.")
         except sqlite3.Error as e:
-            print(f"❌ Fehler beim Hinzufügen der Spalte: {e}")
+            print(f" Fehler beim Hinzufügen der Spalte: {e}")
 
     def fill_with_incrementing_values(self, table_name: str, column_name: str):
         """Befüllt die neu angelegte Spalte mit aufsteigenden Werten, beginnend bei 1."""
         try:
             if not self.column_exists(table_name, column_name):
-                print(f"❌ Spalte '{column_name}' existiert nicht in '{table_name}'.")
+                print(f" Spalte '{column_name}' existiert nicht in '{table_name}'.")
                 return
 
             select_statement = f"SELECT rowid FROM {table_name} ORDER BY rowid"
@@ -67,7 +68,7 @@ class StoreDataUpdater:
             rows = self.cursor.fetchall()
 
             if not rows:
-                print(f"⚠️ Tabelle '{table_name}' enthält keine Einträge.")
+                print(f" Tabelle '{table_name}' enthält keine Einträge.")
                 return
 
             update_statement = f"UPDATE {table_name} SET {column_name} = ? WHERE rowid = ?"
@@ -75,10 +76,10 @@ class StoreDataUpdater:
             self.cursor.executemany(update_statement, data)
 
             self.conn.commit()
-            print(f"✅ Spalte '{column_name}' erfolgreich mit fortlaufenden Werten gefüllt.")
+            print(f" Spalte '{column_name}' erfolgreich mit fortlaufenden Werten gefüllt.")
 
         except sqlite3.Error as e:
-            print(f"❌ Fehler beim Aktualisieren der Werte: {e}")
+            print(f" Fehler beim Aktualisieren der Werte: {e}")
 
     def close(self):
         """Schließt die Verbindung zur Datenbank."""

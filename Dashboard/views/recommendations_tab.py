@@ -5,9 +5,9 @@ class RecommendationsTab:
 
     @staticmethod
     def create_recommendations_section(df, selected_store=None):
-        """Erstellt das Layout für den Recommendations-Tab, einschließlich Dropdown und Empfehlungen."""
+
         if df is None or df.empty:
-            return html.P("🚫 Keine Daten verfügbar.")
+            return html.P(" Keine Daten verfügbar.")
 
         # Store-Optionen für Dropdown erstellen
         store_options = [{"label": f"Store {store}", "value": store} for store in df["StoreID"].unique()]
@@ -29,7 +29,7 @@ class RecommendationsTab:
 
     @staticmethod
     def register_callbacks(app, db_connector):
-        """Registriert den Callback für das Dropdown-Menü."""
+
 
         @app.callback(
             Output("recommendations-content", "children"),
@@ -42,19 +42,19 @@ class RecommendationsTab:
 
             df = db_connector.fetch_data("SELECT * FROM StoreData")
             if df.empty:
-                return html.P("🚫 Keine Daten verfügbar.")
+                return html.P(" Keine Daten verfügbar.")
 
             return RecommendationsTab.generate_recommendations(df, selected_store)
 
     @staticmethod
     def generate_recommendations(df, selected_store):
-        """Erstellt die Empfehlungen basierend auf dem ausgewählten Store."""
+
         if df is None or df.empty:
-            return html.P("🚫 Keine Daten verfügbar.")
+            return html.P(" Keine Daten verfügbar.")
 
         # Prüfe, ob der Store existiert
         if selected_store not in df["StoreID"].values:
-            return html.P("🚫 Der ausgewählte Store existiert nicht in den Daten.")
+            return html.P(" Der ausgewählte Store existiert nicht in den Daten.")
 
         # Daten des ausgewählten Stores abrufen
         store_data = df.loc[df["StoreID"] == selected_store]
@@ -73,16 +73,16 @@ class RecommendationsTab:
                 if store_data.iloc[0][column] < avg_values[column] * threshold:
                     recommendations.append(html.P(message))
 
-        # 🔥 Umsatzsteigerung
+        #  Umsatzsteigerung
         add_recommendation("MonthlySalesRevenue", 1, "📊 Erhöhe das Marketingbudget, um den Umsatz zu steigern.")
 
-        # 🔥 Kundenfrequenz verbessern
+        #  Kundenfrequenz verbessern
         add_recommendation("CustomerFootfall", 1, "👥 Plane mehr Promotion-Events, um mehr Kunden anzulocken.")
 
-        # 🔥 Werbeaktionen optimieren
+        #  Werbeaktionen optimieren
         add_recommendation("PromotionsCount", 1, "🎯 Nutze gezieltere Werbeaktionen zur Steigerung der Kundenfrequenz.")
 
-        # 🔥 Mitarbeiterschulung verbessern
+        #  Mitarbeiterschulung verbessern
         add_recommendation("EmployeeEfficiency", 1, "📚 Optimiere die Mitarbeiterschulung, um die Effizienz zu erhöhen.")
 
         # Falls keine spezifischen Empfehlungen notwendig sind

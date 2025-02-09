@@ -360,7 +360,7 @@ class Dashboard:
 
             df = self.db_connector.fetch_data("SELECT * FROM StoreData")
             if df.empty:
-                return html.P("🚫 Keine Daten verfügbar.")
+                return html.P(" Keine Daten verfügbar.")
 
             return RecommendationsTab.create_recommendations_section(df)
 
@@ -432,7 +432,7 @@ class Dashboard:
         self.app.run_server(debug=True)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": #JE
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, "../scripts/Database.db")
 
