@@ -1,3 +1,5 @@
+import os
+
 import dash  # Framework zum Erstellen von Webanwendungen
 from dash import dcc, html, Input, Output, State  # Komponenten und Rückrufe für Dash-Anwendungen
 import plotly.graph_objects as go
@@ -431,5 +433,9 @@ class Dashboard:
 
 
 if __name__ == "__main__":
-    dashboard = Dashboard("../Database.db")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(script_dir, "../scripts/Database.db")
+
+    # Starte das Dashboard
+    dashboard = Dashboard(db_path)
     dashboard.run()
