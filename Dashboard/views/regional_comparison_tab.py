@@ -76,7 +76,7 @@ class RegionalComparisonTab:
 
     @staticmethod
     def add_category_legend(map_fig, category_symbols):
-        """Add category legend to the map figure."""
+        """Separate Legende, um Farben nicht zu verfälschen."""
         for category in category_symbols.keys():
             map_fig.add_trace(go.Scattergeo(
                 lon=[None],  # Keine Marker auf der Karte
@@ -126,7 +126,7 @@ class RegionalComparisonTab:
 
     @staticmethod
     def get_city_label_positions(coordinates, city_categories):
-        """Get positions for city labels."""
+        """Holt Positionen für Stadtlabels"""
         city_labels_lats = []
         city_labels_lons = []
         city_names = []
@@ -238,13 +238,6 @@ class RegionalComparisonTab:
         return base_lat + lat_offset, base_lon + lon_offset
 
 
-    # 🔹 Einheitliche Farben für jede StoreCategory
-    category_colors = {
-        "Electronic": "#1f77b4",  # Blau
-        "Grocery": "#2ca02c",     # Grün
-        "Clothing": "#d62728"     # Rot
-    }
-
     @staticmethod
     def create_grouped_bar_chart(df):
         """Erzeugt ein gruppiertes Balkendiagramm für Umsatz nach Stadt und Kategorie."""
@@ -255,7 +248,6 @@ class RegionalComparisonTab:
             x="StoreLocation",
             y="MonthlySalesRevenue",
             color="StoreCategory",
-            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
             barmode="group",
             title="Average Monthly Sales Revenue by Store Location and Category",
             labels={"StoreLocation": "Store Location", "MonthlySalesRevenue": "Avg. Monthly Sales Revenue"},
@@ -265,13 +257,15 @@ class RegionalComparisonTab:
 
     @staticmethod
     def create_scatter_competitor_revenue(df):
-        """Erzeugt ein Scatter-Plot für Competitor Distance vs. Revenue mit festen Farben."""
+        """
+        Erzeugt ein Scatter-Plot für Competitor Distance vs. Revenue mit festen Farben.
+        Dabei werden die Stores anhand ihrer StoreLocation farblich unterschieden. (JE und JPG)
+        """
         fig = px.scatter(
             df,
             x="CompetitorDistance",
             y="MonthlySalesRevenue",
             color="StoreCategory",
-            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
             trendline="ols",
             title="Competitor Distance vs. Revenue",
             labels={"CompetitorDistance": "Competitor Distance", "MonthlySalesRevenue": "Monthly Sales Revenue"}
@@ -288,7 +282,6 @@ class RegionalComparisonTab:
             x="StoreLocation",
             y="CustomerFootfall",
             color="StoreCategory",
-            color_discrete_map=RegionalComparisonTab.category_colors,  # 🔹 Feste Farben
             barmode="group",
             title="Average Customer Footfall by Store Location and Category",
             labels={"StoreLocation": "Store Location", "CustomerFootfall": "Avg. Customer Footfall"},

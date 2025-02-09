@@ -122,7 +122,8 @@ class Dashboard:
                 html.Div([
                     html.H2("Key Influencers"),
                     dcc.Graph(id="feature-importance"),
-                    dcc.Graph(id="correlation-heatmap")
+                    dcc.Graph(id="correlation-heatmap"),
+                    dcc.Graph(id="employee-efficiency-importance")
                 ], id="page-key-influencers", style={"display": "none"}),
 
                 html.Div(self.vergleichsfunktion_tab.create_comparison_section(), id="page-vergleichsfunktion",
@@ -173,6 +174,7 @@ class Dashboard:
             [Output("overview-section", "children"),
              Output("feature-importance", "figure"),
              Output("correlation-heatmap", "figure"),
+             Output("employee-efficiency-importance", "figure"),
              Output("barchart_category_footfall", "figure"),
              Output("scatter-footfall-revenue", "figure"),
              Output("scatter-productvariety-footfall", "figure"),
@@ -190,7 +192,7 @@ class Dashboard:
              Output("bubble-chart-operations", "figure"),
              Output("histogram-efficiency", "figure"),
              Output("recommendations-section", "children")],
-            Input("feature-importance", "id")  # Dummy trigger
+            Input("feature-importance", "id")
         )
 
         def update_dashboard(_):
@@ -203,6 +205,7 @@ class Dashboard:
             # Funktionen/Diagramme des KeyInfluencers-Tabs
             feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure(df)
             heatmap_fig = KeyInfluencersTab.create_correlation_heatmap(df)
+            employee_efficiency_importance_fig = KeyInfluencersTab.create_employee_efficiency_importance_figure(df)
 
             # Funktionen/Diagramme des PerformanceInsights-Tabs
             scatter_marketing_fig = PerformanceInsightsTab.create_scatter_marketing_revenue(df)
@@ -231,7 +234,7 @@ class Dashboard:
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section(df)
 
-            return (overview, feature_importance_fig, heatmap_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
+            return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
                     scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
                     map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, recommendations)
 
@@ -247,7 +250,7 @@ class Dashboard:
              State("compare-metrics", "value")]
         )
         def update_comparison(n_clicks, first, second, metrics):
-            """Erzeugt Vergleichsmetriken und Diagramme...(DM)"""
+            """Erzeugt Vergleichsmetriken und Diagramme (DM)"""
             if not first or not second or not metrics:
                 return "Please select two stores/regions and at least one metric.", go.Figure(), go.Figure()
 
