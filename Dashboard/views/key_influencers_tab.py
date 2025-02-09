@@ -118,12 +118,12 @@ class KeyInfluencersTab:
 
         # Standardisiere die Features, damit die Koeffizienten vergleichbar sind
         scaler = StandardScaler()
-        X = scaler.fit_transform(df_model[features])
+        x = scaler.fit_transform(df_model[features])
         y = df_model[target].values
 
         # Trainiere das lineare Regressionsmodell
         model = LinearRegression()
-        model.fit(X, y)
+        model.fit(x, y)
 
         # Extrahiere die Koeffizienten und berechne deren absolute Werte
         coefs = model.coef_
@@ -146,6 +146,67 @@ class KeyInfluencersTab:
             x="Feature",
             y="Influence",
             title="Feature Importance – Einflussfaktoren auf die Employee Efficiency",
+            labels={"Feature": "Faktor", "Influence": "Einfluss (%)"},
+            text="Influence"
+        )
+        fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+        fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+        return fig
+
+    @staticmethod
+    def create_customer_footfall_importance_figure(df):
+        """
+        Berechnet die Feature Importance – also den Einfluss verschiedener Faktoren auf den Customer Footfall –
+        mittels eines linearen Regressionsmodells. Als unabhängige Variablen werden beispielhaft die Features
+        "MarketingSpend", "PromotionsCount", "StoreSize" und "ProductVariety" herangezogen.
+
+        Vorgehensweise:
+          1. Es werden alle Zeilen entfernt, in denen die relevanten Spalten fehlen.
+          2. Die ausgewählten Features werden standardisiert, damit die Koeffizienten vergleichbar sind.
+          3. Ein lineares Regressionsmodell wird trainiert, um den Zusammenhang zwischen den Features und dem
+             Customer Footfall (Zielvariable) zu ermitteln.
+          4. Die absoluten Werte der Koeffizienten werden normalisiert, sodass deren Summe 100% ergibt.
+          5. Das Ergebnis wird in einem Balkendiagramm dargestellt.
+
+        Hinweis: Für diese Methode müssen die Bibliotheken scikit-learn (sklearn) und plotly.express installiert sein.
+        """
+        # Definiere die unabhängigen Variablen (Features) und das Ziel (Target)
+        features = ["MarketingSpend", "PromotionsCount", "StoreSize", "ProductVariety", "StoreAge", "CompetitorDistance", "EconomicIndicator"]
+        target = "CustomerFootfall"
+
+        # Entferne Zeilen mit fehlenden Werten in den relevanten Spalten
+        df_model = df.dropna(subset=features + [target])
+
+        # Standardisiere die Features, um vergleichbare Koeffizienten zu erhalten
+        scaler = StandardScaler()
+        x = scaler.fit_transform(df_model[features])
+        y = df_model[target].values
+
+        # Trainiere das lineare Regressionsmodell
+        model = LinearRegression()
+        model.fit(x, y)
+
+        # Extrahiere die Koeffizienten und berechne deren absolute Werte
+        coefs = model.coef_
+        importances = np.abs(coefs)
+
+        # Normalisiere die Importances, sodass ihre Summe 100% ergibt
+        total = importances.sum()
+        percentages = 100 * importances / total if total > 0 else importances
+
+        # Erstelle einen DataFrame für die Visualisierung
+        data = {
+            "Feature": features,
+            "Influence": percentages
+        }
+        df_importance = pd.DataFrame(data)
+
+        # Erstelle das Balkendiagramm
+        fig = px.bar(
+            df_importance,
+            x="Feature",
+            y="Influence",
+            title="Feature Importance – Einflussfaktoren auf den Customer Footfall",
             labels={"Feature": "Faktor", "Influence": "Einfluss (%)"},
             text="Influence"
         )

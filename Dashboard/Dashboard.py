@@ -125,6 +125,7 @@ class Dashboard:
                     html.H2("Key Influencers"),
                     dcc.Graph(id="feature-importance"),
                     dcc.Graph(id="employee-efficiency-importance"),
+                    dcc.Graph(id="customer-footfall-importance"),
                     dcc.Graph(id="correlation-heatmap"),
                 ], id="page-key-influencers", style={"display": "none"}),
 
@@ -133,8 +134,9 @@ class Dashboard:
 
                 html.Div([
                     html.H2("Performance Insights"),
+                    dcc.Graph(id="box-plot-category"),
                     dcc.Graph(id="scatter-marketing-revenue"),
-                    dcc.Graph(id="box-plot-category")
+                    dcc.Graph(id="scatter-promotions-revenue"),
                 ], id="page-performance-insights", style={"display": "none"}),
 
                 html.Div([
@@ -159,8 +161,9 @@ class Dashboard:
                     html.H2("Store Operations"),
                     dcc.Graph(id="scatter-productvariety-revenue"),
                     dcc.Graph(id="scatter-productvariety-efficiency"),
-                    dcc.Graph(id="scatter-footfall-efficiency"),
+                    dcc.Graph(id="bubble-productvariety-revenue-efficiency"),
                     dcc.Graph(id="bubble-chart-operations"),
+                    dcc.Graph(id="scatter-footfall-efficiency"),
                     dcc.Graph(id="histogram-efficiency"),
                 ], id="page-store-operations", style={"display": "none"}),
 
@@ -178,6 +181,7 @@ class Dashboard:
              Output("feature-importance", "figure"),
              Output("correlation-heatmap", "figure"),
              Output("employee-efficiency-importance", "figure"),
+             Output("customer-footfall-importance", "figure"),
              Output("barchart_category_footfall", "figure"),
              Output("scatter-footfall-revenue", "figure"),
              Output("scatter-productvariety-footfall", "figure"),
@@ -185,6 +189,7 @@ class Dashboard:
              Output("scatter-promotions-footfall", "figure"),
              Output("barchart-promotions-footfall", "figure"),
              Output("scatter-marketing-revenue", "figure"),
+             Output("scatter-promotions-revenue", "figure"),
              Output("scatter-competitor-revenue", "figure"),
              Output("grouped-bar-chart-footfall", "figure"),
              Output("box-plot-category", "figure"),
@@ -192,9 +197,10 @@ class Dashboard:
              Output("grouped-bar-chart", "figure"),
              Output("scatter-productvariety-revenue", "figure"),
              Output("scatter-productvariety-efficiency", "figure"),
+             Output("bubble-productvariety-revenue-efficiency", "figure"),
              Output("bubble-chart-operations", "figure"),
-             Output("histogram-efficiency", "figure"),
              Output("scatter-footfall-efficiency", "figure"),
+             Output("histogram-efficiency", "figure"),
              Output("recommendations-section", "children")],
             Input("feature-importance", "id")
         )
@@ -210,10 +216,12 @@ class Dashboard:
             feature_importance_fig = KeyInfluencersTab.create_feature_importance_figure(df)
             heatmap_fig = KeyInfluencersTab.create_correlation_heatmap(df)
             employee_efficiency_importance_fig = KeyInfluencersTab.create_employee_efficiency_importance_figure(df)
+            customer_footfall_importance_fig = KeyInfluencersTab.create_customer_footfall_importance_figure(df)
 
             # Funktionen/Diagramme des PerformanceInsights-Tabs
             scatter_marketing_fig = PerformanceInsightsTab.create_scatter_marketing_revenue(df)
             box_plot_category_fig = PerformanceInsightsTab.create_box_plot_category(df)
+            scatter_promotions_revenue_fig = PerformanceInsightsTab.create_scatter_promotions_revenue(df)
 
             # Funktionen/Diagramme des CustomerInsights-Tabs
             barchart_category_footfall_fig = CustomerInsightsTab.create_barchart_category_footfall(df)
@@ -232,16 +240,17 @@ class Dashboard:
             # Funktionen/Diagramme des StoreOperations-Tabs
             scatter_productvariety_revenue_fig = StoreOperationsTab.create_scatter_productvariety_revenue(df)
             scatter_productvariety_efficiency_fig = StoreOperationsTab.create_scatter_productvariety_efficiency(df)
+            bubble_productvariety_revenue_efficiency_fig = StoreOperationsTab.create_bubble_chart_with_best_point(df)
             bubble_chart_fig = StoreOperationsTab.create_bubble_chart_operations(df)
-            histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
             scatter_footfall_efficiency_fig = StoreOperationsTab.create_scatter_customerfootfall_efficiency(df)
+            histogram_fig = StoreOperationsTab.create_histogram_efficiency(df)
 
             # Funktionen/Diagramme des Recommendations-Tabs
             recommendations = RecommendationsTab.create_recommendations_section(df)
 
-            return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
-                    scatter_marketing_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
-                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_chart_fig, histogram_fig, scatter_footfall_efficiency_fig, recommendations)
+            return (overview, feature_importance_fig, heatmap_fig, employee_efficiency_importance_fig, customer_footfall_importance_fig, barchart_category_footfall_fig, scatter_footfall_fig, scatter_productvariety_footfall_fig, scatter_marketing_footfall_fig, scatter_promotions_footfall_fig, barchart_promotions_footfall_fig,
+                    scatter_marketing_fig, scatter_promotions_revenue_fig, scatter_competitor_fig, grouped_barchart_footfall_fig , box_plot_category_fig,
+                    map_fig, grouped_bar_fig, scatter_productvariety_revenue_fig, scatter_productvariety_efficiency_fig, bubble_productvariety_revenue_efficiency_fig, bubble_chart_fig, scatter_footfall_efficiency_fig, histogram_fig, recommendations)
 
         """ Navigation und View-Handling basierend auf der URL (JPG) """
         #Setup der callbacks fürs Vergleichsfunktion in Dashboard. (DM)

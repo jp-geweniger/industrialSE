@@ -51,3 +51,29 @@ class PerformanceInsightsTab:
         fig.update_layout(boxmode="overlay")  # Mehrere Boxplots überlagert anzeigen
 
         return fig
+
+    @staticmethod
+    def create_scatter_promotions_revenue(df):
+        """
+        Erzeugt ein Streudiagramm mit Trendlinie, das den Zusammenhang zwischen PromotionsCount
+        (Anzahl der Promotion-Events) und MonthlySalesRevenue (Monatlicher Umsatz) darstellt. (JPG)
+
+        - X-Achse: PromotionsCount (Anzahl der Promotion-Events)
+        - Y-Achse: MonthlySalesRevenue (Monatlicher Umsatz)
+        - Farb-Codierung: StoreCategory (zeigt branchenspezifische Unterschiede)
+        - Trendlinie: Fügt eine lineare Regressionslinie (OLS) hinzu, um den generellen Trend zu verdeutlichen.
+        """
+        fig = px.scatter(
+            df,
+            x="PromotionsCount",
+            y="MonthlySalesRevenue",
+            color="StoreCategory",  # Unterscheidung nach StoreCategory
+            trendline="ols",  # Trendlinie als lineare Regression (OLS)
+            title="Promotions vs Revenue",
+            labels={
+                "PromotionsCount": "Promotions Count (Anzahl der Promotion-Events)",
+                "MonthlySalesRevenue": "Monthly Sales Revenue (Umsatz)"
+            },
+            hover_data=["StoreID"]
+        )
+        return fig
